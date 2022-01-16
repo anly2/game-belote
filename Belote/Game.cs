@@ -17,7 +17,7 @@ namespace Belote
 
         private MatchState? _match
         {
-            get => (MatchState?) _state.Match;
+            get => _state.Match;
             set => _state.Match = value;
         }
         
@@ -102,16 +102,17 @@ namespace Belote
             }
 
             public readonly List<Card> Deck;
-            IReadOnlyList<Card> IGameState.Deck { get => Deck.AsReadOnly(); }
+            IReadOnlyList<Card> IGameState.Deck => Deck.AsReadOnly();
 
             public IReadOnlyList<IPlayer> Players { get; }
 
             public IReadOnlyList<byte> PlayerTeams { get; }
             
             public readonly List<byte> Scores;
-            IReadOnlyList<byte> IGameState.Scores { get => Scores.AsReadOnly(); }
-            
-            public IMatchState? Match { get; set; }
+            IReadOnlyList<byte> IGameState.Scores => Scores.AsReadOnly();
+
+            public MatchState? Match { get; set; }
+            IMatchState? IGameState.Match => Match;
         }
 
         private class MatchState : IMatchState
@@ -142,6 +143,7 @@ namespace Belote
                 return this;
             }
 
+
             public byte Dealer { get; set; }
             
             public IList<IList<Card>> PlayerCards { get; }
@@ -153,6 +155,7 @@ namespace Belote
             IReadOnlyList<Declaration> IMatchState.Declarations => new ReadOnlyCollection<Declaration>(Declarations); 
             
             public byte? TrickInitiator { get; set; }
+            
             public IList<Card> TrickCards { get; set; }
             IReadOnlyList<Card> IMatchState.TrickCards => new ReadOnlyCollection<Card>(TrickCards); 
             
@@ -172,11 +175,35 @@ namespace Belote
         }
     }
     
-    public static class CardUtils
+    public static class GameRulesExtensions
     {
-        public static int SuitOrdinal(this Card card)
+        private static int[] CardValues =
         {
-            return (int) card % 14;
+            /*7*/ 0, /*8*/ 0, /*9*/ 0,  /*J*/ 2,  /*Q*/ 3, /*K*/ 4, /*10*/ 10, /*A*/ 11
+        };
+        private static int[] CardTrumpValues =
+        {
+            /*7*/ 0, /*8*/ 0, /*9*/ 14, /*J*/ 20, /*Q*/ 3, /*K*/ 4, /*10*/ 10, /*A*/ 11
+        };
+        
+        public static int GetPower(this Card card)
+        {
+            // '6's and below get negative;
+            // '7's get 0, '8's get 1 , '9's get 2,
+            // '10's get 6 (!!!)
+            // 'J's get 3, 'Q's get 4, 'K' get 5
+            // 'A's get 7
+            var v = card.SuitOrdinal();
+            return (v < 9) ? v - 6 : (v == 9) ? 6 : v - 7;
+        }
+        
+        public static int GetValue(this Card card)
+        {
+            return CardValues[card.GetPower()];
+        }
+        public static int GetValueWhenTrump(this Card card)
+        {
+            return CardTrumpValues[card.GetPower()];
         }
     }
 }

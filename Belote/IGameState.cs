@@ -8,5 +8,7 @@ namespace Belote
         public IReadOnlyList<byte> Scores { get; }
         public IReadOnlyList<IPlayer> Players { get; }
         public IReadOnlyList<byte> PlayerTeams { get; }
+        
+        public IMatchState? Match { get; }
     }
 }

@@ -59,4 +59,18 @@
         Spades_K,
         Spades_A
     }
+    
+    
+    public static class CardUtils
+    {
+        public static int Suit(this Card card)
+        {
+            return (int) card / 14;
+        }
+        
+        public static int SuitOrdinal(this Card card)
+        {
+            return (int) card % 14;
+        }
+    }
 }
