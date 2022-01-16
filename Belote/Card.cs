@@ -2,7 +2,6 @@
 {
     public enum Card
     {
-        Clubs_1,
         Clubs_2,
         Clubs_3,
         Clubs_4,
@@ -16,7 +15,6 @@
         Clubs_Q,
         Clubs_K,
         Clubs_A,
-        Diamonds_1,
         Diamonds_2,
         Diamonds_3,
         Diamonds_4,
@@ -30,7 +28,6 @@
         Diamonds_Q,
         Diamonds_K,
         Diamonds_A,
-        Hearts_1,
         Hearts_2,
         Hearts_3,
         Hearts_4,
@@ -44,7 +41,6 @@
         Hearts_Q,
         Hearts_K,
         Hearts_A,
-        Spades_1,
         Spades_2,
         Spades_3,
         Spades_4,
@@ -68,7 +64,7 @@
             return (int) card / 14;
         }
         
-        public static int SuitOrdinal(this Card card)
+        public static int Rank(this Card card)
         {
             return (int) card % 14;
         }

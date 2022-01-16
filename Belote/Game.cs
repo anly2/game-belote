@@ -31,7 +31,7 @@ namespace Belote
         public static List<Card> GetPlayingDeck()
         {
             var deck = new List<Card>(Enum.GetValues<Card>());
-            deck.RemoveAll(card => card.SuitOrdinal() < 6);
+            deck.RemoveAll(card => card.Rank() < 6);
             return deck;
         }
         
@@ -175,35 +175,30 @@ namespace Belote
         }
     }
     
-    public static class GameRulesExtensions
+    public static class BeloteCardSemantics
     {
-        private static int[] CardValues =
+        private static readonly int[] CardPowers =
         {
-            /*7*/ 0, /*8*/ 0, /*9*/ 0,  /*J*/ 2,  /*Q*/ 3, /*K*/ 4, /*10*/ 10, /*A*/ 11
-        };
-        private static int[] CardTrumpValues =
-        {
-            /*7*/ 0, /*8*/ 0, /*9*/ 14, /*J*/ 20, /*Q*/ 3, /*K*/ 4, /*10*/ 10, /*A*/ 11
+            // 2,  3,  4,  5,  6, 7, 8, 9, 10, J, Q, K, A
+              -1, -1, -1, -1, -1, 0, 1, 2,  6, 3, 4, 5, 7
         };
         
-        public static int GetPower(this Card card)
+        private static readonly int[] CardTrumpPowers =
         {
-            // '6's and below get negative;
-            // '7's get 0, '8's get 1 , '9's get 2,
-            // '10's get 6 (!!!)
-            // 'J's get 3, 'Q's get 4, 'K' get 5
-            // 'A's get 7
-            var v = card.SuitOrdinal();
-            return (v < 9) ? v - 6 : (v == 9) ? 6 : v - 7;
-        }
+            // 2,  3,  4,  5,  6, 7, 8, 9, 10, J, Q, K, A
+              -1, -1, -1, -1, -1, 0, 1, 8,  6, 9, 4, 5, 7
+        };
         
-        public static int GetValue(this Card card)
+        private static readonly int[] CardValues =
         {
-            return CardValues[card.GetPower()];
-        }
-        public static int GetValueWhenTrump(this Card card)
-        {
-            return CardTrumpValues[card.GetPower()];
-        }
+            //7, 8, 9,  J,  Q, K, 10, A,  T9, TJ 
+              0, 0, 0,  2,  3, 4, 10, 11, 14, 20
+        };
+        
+        public static int Power(this Card card) => CardPowers[card.Rank()];
+        public static int PowerWhenTrump(this Card card) => CardTrumpPowers[card.Rank()];
+        
+        public static int Value(this Card card) => CardValues[card.Power()];
+        public static int ValueWhenTrump(this Card card) => CardValues[card.PowerWhenTrump()];
     }
 }
