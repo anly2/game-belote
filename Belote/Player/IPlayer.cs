@@ -2,7 +2,7 @@
 using Belote.Domain;
 using Belote.Game.State;
 
-namespace Belote.Players
+namespace Belote.Player
 {
     public interface IPlayer
     {

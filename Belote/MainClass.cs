@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using Belote.Players;
-using Belote.Players.Basic;
+using Belote.Player;
+using Belote.Player.Ai.Basic;
 
 namespace Belote
 {
@@ -11,7 +11,7 @@ namespace Belote
         {
             new Game.Game(
                 Game.Game.GetPlayingDeck(),
-                new List<IPlayer>(Enumerable.Repeat<IPlayer>(new Player(), 4))
+                new List<IPlayer>(Enumerable.Repeat<IPlayer>(new BasicAiPlayer(), 4))
             ).PlayGame();
         }
     }

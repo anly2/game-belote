@@ -2,7 +2,7 @@
 using System.Linq;
 using Belote.Domain;
 using Belote.Game.State;
-using Belote.Players;
+using Belote.Player;
 
 namespace Belote.Game
 {

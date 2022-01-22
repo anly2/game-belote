@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using Belote.Domain;
-using Belote.Players;
+using Belote.Player;
 
 namespace Belote.Game.State
 {
