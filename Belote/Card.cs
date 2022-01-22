@@ -1,5 +1,6 @@
 ﻿namespace Belote
 {
+    // ReSharper disable InconsistentNaming
     public enum Card
     {
         Clubs_2,

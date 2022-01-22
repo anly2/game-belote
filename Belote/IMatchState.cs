@@ -4,11 +4,12 @@ namespace Belote
 {
     public interface IMatchState
     {
-        public byte Dealer { get; }
+        public int Dealer { get; }
         public IReadOnlyList<IReadOnlyList<Card>> PlayerCards { get; }
-        public byte? CommittedPlayer { get; }
+        public Contract? Contract { get; }
+        public int? CommittedPlayer { get; }
         public IReadOnlyList<Declaration> Declarations { get; }
-        public byte? TrickInitiator { get; }
+        public int? TrickInitiator { get; }
         public IReadOnlyList<Card> TrickCards { get; }
         public IReadOnlyList<IReadOnlyList<Card>> WonCards { get; }
     }

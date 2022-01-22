@@ -1,9 +1,7 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using System.Xml.Schema;
 using CommonUtils;
 
 namespace Belote
@@ -15,7 +13,8 @@ namespace Belote
         private readonly GameState _state;
         public IGameState State => _state;
 
-        private MatchState? _match
+        // ReSharper disable once InconsistentNaming
+        private MatchState _match
         {
             get => _state.Match;
             set => _state.Match = value;
@@ -25,6 +24,15 @@ namespace Belote
         public Game(List<Card> deck, List<IPlayer> players)
         {
             _state = new GameState(deck, players);
+            BindPlayerStateViews();
+        }
+
+        private void BindPlayerStateViews()
+        {
+            for (var i = 0; i < _state.Players.Count; i++)
+            {
+                _state.Players[i].BindStateView(new PlayerStateView(_state, i));
+            }
         }
 
 
@@ -42,7 +50,8 @@ namespace Belote
                 return new byte[] {0, 1, 0, 1};
             return Enumerable.Range(0, players.Count-1).Select(b => (byte) b).ToList().AsReadOnly();
         }
-
+        
+        
         public virtual void PlayGame()
         {
             //#! With this naive condition the rule of "Cannot win with Valat" is not implemented
@@ -61,9 +70,9 @@ namespace Belote
         protected virtual void PlayMatch()
         {
             // init match state
-            var prevDealer = _match?.Dealer;
+            var prevDealer = _match.Dealer;
             
-            _match = _match?.Fresh() ?? new MatchState(_state.Players.Count);
+            _match = _match.Fresh();
             
             _match.Dealer = _state.NextPlayer(prevDealer);
 
@@ -99,6 +108,7 @@ namespace Belote
                 Players = players;
                 PlayerTeams = AssignPlayerTeams(players);
                 Scores = new List<byte>(new byte[PlayerTeams.Distinct().Count()]);
+                Match = new MatchState(players.Count);
             }
 
             public readonly List<Card> Deck;
@@ -111,8 +121,8 @@ namespace Belote
             public readonly List<byte> Scores;
             IReadOnlyList<byte> IGameState.Scores => Scores.AsReadOnly();
 
-            public MatchState? Match { get; set; }
-            IMatchState? IGameState.Match => Match;
+            public MatchState Match { get; set; }
+            IMatchState IGameState.Match => Match;
         }
 
         private class MatchState : IMatchState
@@ -120,6 +130,7 @@ namespace Belote
             public MatchState(int playerCount)
             {
                 PlayerCards = new List<IList<Card>>();
+                Contract = null; 
                 Declarations = new List<Declaration>();
                 TrickCards = new List<Card>();
                 WonCards = new List<IList<Card>>();
@@ -138,40 +149,69 @@ namespace Belote
                 Declarations.Clear();
                 TrickCards.Clear();
                 Dealer = 0;
+                Contract = null;
                 CommittedPlayer = null;
                 TrickInitiator = null;
                 return this;
             }
 
 
-            public byte Dealer { get; set; }
+            public int Dealer { get; set; }
             
             public IList<IList<Card>> PlayerCards { get; }
             IReadOnlyList<IReadOnlyList<Card>> IMatchState.PlayerCards => PlayerCards.Select(s => new ReadOnlyCollection<Card>(s)).ToList().AsReadOnly();
             
-            public byte? CommittedPlayer { get; set; }
+            public Contract? Contract { get; private set; }
             
-            public IList<Declaration> Declarations { get; set; }
+            public int? CommittedPlayer { get; private set; }
+
+            public IList<Declaration> Declarations { get; }
             IReadOnlyList<Declaration> IMatchState.Declarations => new ReadOnlyCollection<Declaration>(Declarations); 
             
-            public byte? TrickInitiator { get; set; }
+            public int? TrickInitiator { get; private set; }
             
-            public IList<Card> TrickCards { get; set; }
+            public IList<Card> TrickCards { get; }
             IReadOnlyList<Card> IMatchState.TrickCards => new ReadOnlyCollection<Card>(TrickCards); 
             
-            public IList<IList<Card>> WonCards { get; set; }
+            public IList<IList<Card>> WonCards { get; }
             IReadOnlyList<IReadOnlyList<Card>> IMatchState.WonCards => WonCards.Select(s => new ReadOnlyCollection<Card>(s)).ToList().AsReadOnly();
+        }
+
+        private class PlayerStateView : IPlayerStateView
+        {
+            public PlayerStateView(GameState gameState, int playerIndex)
+            {
+                State = gameState;
+                PlayerIndex = playerIndex;
+                CurrentHand = new ReadOnlyCollection<Card>(gameState.Match.PlayerCards[playerIndex]);
+                CurrentTrick = new ReadOnlyCollection<Card>(gameState.Match.TrickCards);
+            }
+
+            private GameState State;
+
+            public int PlayerIndex { get; }
+            public IReadOnlyList<Card> CurrentHand { get; }
+            public IReadOnlyList<Card> CurrentTrick { get; }
+
+            int? IPlayerStateView.CurrentTrickInitiator => State.Match.TrickInitiator;
+
+            int IPlayerStateView.CurrentMatchDealer => State.Match.Dealer;
+
+            Contract? IPlayerStateView.CurrentContract => State.Match.Contract;
+
+            bool IPlayerStateView.CommittedToCurrentContract => State.Match.CommittedPlayer != null &&
+                    State.PlayerTeams[PlayerIndex] == State.PlayerTeams[State.Match.CommittedPlayer.Value];
         }
     }
 
     public static class IndexUtils
     {
-        public static byte NextPlayer(this IGameState gameState, byte? playerIndex)
+        public static int NextPlayer(this IGameState gameState, int? playerIndex)
         {
             if (playerIndex == null)
                 return 0;
 
-            return (byte)((byte) (playerIndex + 1) % gameState.Players.Count);
+            return (playerIndex.Value + 1) % gameState.Players.Count;
         }
     }
     
