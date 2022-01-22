@@ -79,8 +79,10 @@ namespace Belote
             
             // play match
             DealInitial();
-            // GatherBids();
-            // DealRemaining();
+            if (!GatherBids()) return;
+            DealRemaining();
+
+            //PLAYERS
 
             // finish match
             // var scores = CountScore();
@@ -90,16 +92,51 @@ namespace Belote
 
         protected virtual void DealInitial()
         {
-            if (_match == null) throw new InvalidOperationException("There is no Match started!");
-            
             for (var i = 0; i < _state.Players.Count; i++)
                 _state.Deck.Move(3, _match.PlayerCards[i]);
             
             for (var i = 0; i < _state.Players.Count; i++)
                 _state.Deck.Move(2, _match.PlayerCards[i]);
         }
-        
-        
+
+        protected virtual void DealRemaining()
+        {
+            for (var i = 0; i < _state.Players.Count; i++)
+                _state.Deck.Move(3, _match.PlayerCards[i]);
+        }
+
+        protected virtual bool GatherBids()
+        {
+            Contract? currentBid = null;
+            var playerIndex = _match.Dealer;
+            var passes = 0;
+            while (passes < 4)
+            {
+                playerIndex = _state.NextPlayer(playerIndex);
+                var player = _state.Players[playerIndex];
+
+                var bid = player.Bid();
+
+                if (bid == null)
+                {
+                    passes++;
+                    continue;
+                }
+
+                if (bid <= currentBid)
+                    throw new InvalidOperationException($"Player ${playerIndex} made an invalid bid of ${bid} when ${currentBid} has already been called!");
+
+                currentBid = bid;
+                _match.Contract = currentBid;
+                _match.CommittedPlayer = playerIndex;
+            }
+
+            return currentBid != null;
+        }
+
+
+        // State implementations //
+
         private class GameState : IGameState
         {
             public GameState(List<Card> deck, List<IPlayer> players)
@@ -161,9 +198,9 @@ namespace Belote
             public IList<IList<Card>> PlayerCards { get; }
             IReadOnlyList<IReadOnlyList<Card>> IMatchState.PlayerCards => PlayerCards.Select(s => new ReadOnlyCollection<Card>(s)).ToList().AsReadOnly();
             
-            public Contract? Contract { get; private set; }
+            public Contract? Contract { get; set; }
             
-            public int? CommittedPlayer { get; private set; }
+            public int? CommittedPlayer { get; set; }
 
             public IList<Declaration> Declarations { get; }
             IReadOnlyList<Declaration> IMatchState.Declarations => new ReadOnlyCollection<Declaration>(Declarations); 
