@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using Belote.Domain;
@@ -61,6 +62,16 @@ namespace Belote.Game
 
             public IList<IList<Card>> WonCards { get; }
             IReadOnlyList<IReadOnlyList<Card>> IMatchState.WonCards => WonCards.Select(s => new ReadOnlyCollection<Card>(s)).ToList().AsReadOnly();
+
+
+            public event Action<int, Contract>? OnBid;
+
+            public void Bid(int playerIndex, Contract bid)
+            {
+                CommittedPlayer = playerIndex;
+                Contract = bid;
+                OnBid?.Invoke(playerIndex, bid);
+            }
         }
     }
 }

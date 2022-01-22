@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Belote.Domain;
 
 namespace Belote.Game.State
@@ -13,5 +14,8 @@ namespace Belote.Game.State
         public int? TrickInitiator { get; }
         public IReadOnlyList<Card> TrickCards { get; }
         public IReadOnlyList<IReadOnlyList<Card>> WonCards { get; }
+
+
+        public event Action<int, Contract> OnBid;
     }
 }

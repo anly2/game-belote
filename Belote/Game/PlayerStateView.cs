@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using Belote.Domain;
 using Belote.Game.State;
@@ -32,6 +33,15 @@ namespace Belote.Game
 
             bool IPlayerStateView.CommittedToCurrentContract => _gameState.Match.CommittedPlayer != null &&
                     _gameState.PlayerTeams[PlayerIndex] == _gameState.PlayerTeams[_gameState.Match.CommittedPlayer.Value];
+
+
+            // Delegate events //
+
+            event Action<int, Contract>? IPlayerStateView.OnBid
+            {
+                add => _gameState.Match.OnBid += value;
+                remove => _gameState.Match.OnBid -= value;
+            }
         }
     }
 }

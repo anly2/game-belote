@@ -131,8 +131,7 @@ namespace Belote.Game
                         $"Player ${playerIndex} made an invalid bid of ${bid} when ${currentBid} has already been called!");
 
                 currentBid = bid;
-                _match.Contract = currentBid;
-                _match.CommittedPlayer = playerIndex;
+                _match.Bid(playerIndex, bid.Value);
             }
 
             return currentBid != null;

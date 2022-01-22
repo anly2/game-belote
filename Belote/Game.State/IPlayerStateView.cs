@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Belote.Domain;
 
 namespace Belote.Game.State
@@ -12,7 +13,10 @@ namespace Belote.Game.State
         public int CurrentMatchDealer { get; }
         public Contract? CurrentContract { get; }
         public bool CommittedToCurrentContract { get; }
-        
+
+
+        event Action<int, Contract> OnBid;
+
         //event OnPlayedCard
         //event OnDeclaration
         //event OnTrickEnd
