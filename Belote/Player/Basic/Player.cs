@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using Belote.Domain;
+using Belote.Game.State;
 
-namespace Belote
+namespace Belote.Players.Basic
 {
     public class Player : IPlayer
     {

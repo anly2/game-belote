@@ -1,6 +1,8 @@
 ﻿using System.Collections.Generic;
+using Belote.Domain;
+using Belote.Game.State;
 
-namespace Belote
+namespace Belote.Players
 {
     public interface IPlayer
     {

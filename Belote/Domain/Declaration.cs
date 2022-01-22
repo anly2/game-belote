@@ -1,4 +1,4 @@
-﻿namespace Belote
+﻿namespace Belote.Domain
 {
     public enum Declaration
     {

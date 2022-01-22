@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
+using Belote.Domain;
 
-namespace Belote
+namespace Belote.Game.State
 {
     public interface IMatchState
     {

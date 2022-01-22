@@ -1,4 +1,4 @@
-﻿namespace Belote
+﻿namespace Belote.Domain
 {
     // ReSharper disable InconsistentNaming
     public enum Card

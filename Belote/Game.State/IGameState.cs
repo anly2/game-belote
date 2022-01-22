@@ -1,6 +1,8 @@
 ﻿using System.Collections.Generic;
+using Belote.Domain;
+using Belote.Players;
 
-namespace Belote
+namespace Belote.Game.State
 {
     public interface IGameState
     {

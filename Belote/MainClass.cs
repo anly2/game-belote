@@ -1,6 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
+using Belote.Players;
+using Belote.Players.Basic;
 
 namespace Belote
 {
@@ -8,7 +9,10 @@ namespace Belote
     {
         public static void Main(string[] args)
         {
-            new Game(Game.GetPlayingDeck(), new List<IPlayer>(Enumerable.Repeat<IPlayer>(new Player(), 4))).PlayGame();
+            new Game.Game(
+                Game.Game.GetPlayingDeck(),
+                new List<IPlayer>(Enumerable.Repeat<IPlayer>(new Player(), 4))
+            ).PlayGame();
         }
     }
 }
