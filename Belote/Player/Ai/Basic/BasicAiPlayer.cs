@@ -16,7 +16,7 @@ namespace Belote.Player.Ai.Basic
 
         public Contract? Bid()
         {
-            throw new NotImplementedException();
+            return null;
         }
 
         public Card Play(List<Declaration> declarations)

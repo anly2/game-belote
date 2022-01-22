@@ -1,4 +1,8 @@
-﻿namespace Belote.Domain
+﻿using System.Collections.Generic;
+using System.Linq;
+using static System.String;
+
+namespace Belote.Domain
 {
     // ReSharper disable InconsistentNaming
     public enum Card
@@ -62,12 +66,25 @@
     {
         public static int Suit(this Card card)
         {
-            return (int) card / 14;
+            return (int) card / 13;
         }
         
         public static int Rank(this Card card)
         {
-            return (int) card % 14;
+            return (int) card % 13;
         }
+
+        private static readonly string[] CardSuitTexts = {"♣", "♦", "♥", "♠"};
+        private static readonly string[] CardRankTexts = {"2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K", "A"};
+        public static string Text(this Card card)
+        {
+            return CardRankTexts[card.Rank()] + CardSuitTexts[card.Suit()];
+        }
+
+        public static string Text(this IEnumerable<Card> cards)
+        {
+            return Join(", ", cards.Select(c => c.Text()));
+        }
+
     }
 }
