@@ -181,26 +181,26 @@ namespace Belote
         {
             public PlayerStateView(GameState gameState, int playerIndex)
             {
-                State = gameState;
+                _gameState = gameState;
                 PlayerIndex = playerIndex;
                 CurrentHand = new ReadOnlyCollection<Card>(gameState.Match.PlayerCards[playerIndex]);
                 CurrentTrick = new ReadOnlyCollection<Card>(gameState.Match.TrickCards);
             }
 
-            private GameState State;
+            private readonly GameState _gameState;
 
             public int PlayerIndex { get; }
             public IReadOnlyList<Card> CurrentHand { get; }
             public IReadOnlyList<Card> CurrentTrick { get; }
 
-            int? IPlayerStateView.CurrentTrickInitiator => State.Match.TrickInitiator;
+            int? IPlayerStateView.CurrentTrickInitiator => _gameState.Match.TrickInitiator;
 
-            int IPlayerStateView.CurrentMatchDealer => State.Match.Dealer;
+            int IPlayerStateView.CurrentMatchDealer => _gameState.Match.Dealer;
 
-            Contract? IPlayerStateView.CurrentContract => State.Match.Contract;
+            Contract? IPlayerStateView.CurrentContract => _gameState.Match.Contract;
 
-            bool IPlayerStateView.CommittedToCurrentContract => State.Match.CommittedPlayer != null &&
-                    State.PlayerTeams[PlayerIndex] == State.PlayerTeams[State.Match.CommittedPlayer.Value];
+            bool IPlayerStateView.CommittedToCurrentContract => _gameState.Match.CommittedPlayer != null &&
+                    _gameState.PlayerTeams[PlayerIndex] == _gameState.PlayerTeams[_gameState.Match.CommittedPlayer.Value];
         }
     }
 
