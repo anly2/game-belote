@@ -76,9 +76,18 @@ namespace Belote.Domain
 
         private static readonly string[] CardSuitTexts = {"♣", "♦", "♥", "♠"};
         private static readonly string[] CardRankTexts = {"2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K", "A"};
+        public static string SuitText(this Card card)
+        {
+            return CardSuitTexts[card.Suit()];
+        }
+        public static string RankText(this Card card)
+        {
+            return CardRankTexts[card.Rank()];
+        }
+
         public static string Text(this Card card)
         {
-            return CardRankTexts[card.Rank()] + CardSuitTexts[card.Suit()];
+            return card.RankText() + card.SuitText();
         }
 
         public static string Text(this IEnumerable<Card> cards)

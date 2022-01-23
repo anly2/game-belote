@@ -128,7 +128,7 @@ namespace Belote.Game
 
                 if (bid <= currentBid)
                     throw new InvalidOperationException(
-                        $"Player ${playerIndex} made an invalid bid of ${bid} when ${currentBid} has already been called!");
+                        $"Player {playerIndex} made an invalid bid of {bid} when {currentBid} has already been called!");
 
                 currentBid = bid;
                 _match.Bid(playerIndex, bid.Value);
