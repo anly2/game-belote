@@ -1,4 +1,6 @@
-﻿using Belote.Domain;
+﻿using System.Collections.Generic;
+using System.Linq;
+using Belote.Domain;
 
 namespace Belote.Game
 {
@@ -27,5 +29,29 @@ namespace Belote.Game
         
         public static int Value(this Card card) => CardValues[card.Power()];
         public static int ValueWhenTrump(this Card card) => CardValues[card.PowerWhenTrump()];
+
+
+        public static bool IsTrump(this Card card, Contract? contract = null)
+        {
+            return contract?.Plain() switch
+            {
+                null => false,
+                Contract.NoTrumps => false,
+                Contract.AllTrumps => true,
+                _ => ContractUtils.PlainContracts[card.Suit()] == contract
+            };
+        }
+
+
+        public static void SortHand(this List<Card> hand, Contract? contract = null)
+        {
+            hand.Sort((a,b) =>
+            {
+                var suitComparison = a.Suit().CompareTo(b.Suit());
+                return suitComparison != 0 ? suitComparison : -(a.IsTrump(contract)
+                        ? a.PowerWhenTrump().CompareTo(b.PowerWhenTrump())
+                        : a.Power().CompareTo(b.Power()));
+            });
+        }
     }
 }

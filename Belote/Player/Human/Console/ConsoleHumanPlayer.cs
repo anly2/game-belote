@@ -34,7 +34,8 @@ namespace Belote.Player.Human.Console
             Print("Cards: " + _state.CurrentHand.Text());
 
             PrintBidOptions();
-            var bid = Convert.ToInt32(System.Console.ReadLine()) - 1;
+            if (!int.TryParse(System.Console.ReadLine(), out var bid)) bid = 0;
+            bid--;
 
             if (bid == 6)
             {

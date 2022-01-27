@@ -105,7 +105,10 @@ namespace Belote.Game
         protected virtual void DealRemaining()
         {
             for (var i = 0; i < _state.Players.Count; i++)
+            {
                 _state.Deck.Move(3, _match.PlayerCards[i]);
+                _match.PlayerCards[i].SortHand(_match.Contract);
+            }
         }
 
         protected virtual bool GatherBids()
@@ -118,7 +121,13 @@ namespace Belote.Game
                 playerIndex = _state.NextPlayer(playerIndex);
                 var player = _state.Players[playerIndex];
 
-                var bid = _state.Match.CommittedPlayer == playerIndex ? null : player.Bid();
+                Contract? bid = null;
+                if (_state.Match.CommittedPlayer != playerIndex)
+                {
+                    _match.PlayerCards[playerIndex].SortHand(currentBid);
+                    bid = player.Bid();
+                }
+
 
                 if (bid == null)
                 {

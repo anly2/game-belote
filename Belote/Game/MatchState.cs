@@ -16,7 +16,7 @@ namespace Belote.Game
         {
             public MatchState(int playerCount)
             {
-                PlayerCards = new List<IList<Card>>();
+                PlayerCards = new List<List<Card>>();
                 Contract = null;
                 Declarations = new List<Declaration>();
                 TrickCards = new List<Card>();
@@ -45,7 +45,7 @@ namespace Belote.Game
 
             public int Dealer { get; set; }
 
-            public IList<IList<Card>> PlayerCards { get; }
+            public IList<List<Card>> PlayerCards { get; }
             IReadOnlyList<IReadOnlyList<Card>> IMatchState.PlayerCards => PlayerCards.Select(s => new ReadOnlyCollection<Card>(s)).ToList().AsReadOnly();
 
             public Contract? Contract { get; set; }
