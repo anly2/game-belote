@@ -6,13 +6,14 @@ namespace Belote.Game.State
 {
     public interface IPlayerStateView
     {
+        public IGameState GameState { get; }
         public int PlayerIndex { get; }
         public IReadOnlyList<Card> CurrentHand { get; }
         public IReadOnlyList<Card> CurrentTrick { get; }
         public int? CurrentTrickInitiator { get; }
         public int CurrentMatchDealer { get; }
         public Contract? CurrentContract { get; }
-        public bool CommittedToCurrentContract { get; }
+        public bool IsCommittedToCurrentContract { get; }
 
 
         event Action<int, Contract> OnBid;

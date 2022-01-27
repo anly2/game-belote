@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 using Belote.Domain;
 using Belote.Game.State;
@@ -21,6 +20,7 @@ namespace Belote.Player.Human.Console
         {
             _state = playerStateView;
         }
+        #pragma warning disable CS8602
 
         protected void Print(string message)
         {
@@ -31,10 +31,17 @@ namespace Belote.Player.Human.Console
         public Contract? Bid()
         {
             Print("Your turn to bid:");
-            Print("Cards: " + _state?.CurrentHand.Text());
+            Print("Cards: " + _state.CurrentHand.Text());
 
             PrintBidOptions();
             var bid = Convert.ToInt32(System.Console.ReadLine()) - 1;
+
+            if (bid == 6)
+            {
+                return _state.CurrentContract?.IsContre() == true ?
+                    _state.CurrentContract?.Recontra() : _state.CurrentContract?.Contre();
+            }
+
             if (bid < 0) return null;
             return ContractUtils.PlainContracts[bid];
         }
@@ -54,11 +61,12 @@ namespace Belote.Player.Human.Console
                 sb.Append(' ').Append((int) contract <= currentContract ?  "-" : n.ToString()).Append(':').Append(contract.Text());
             }
 
-            //FIXME do this logic properly
-            if (currentContract >= 0)
+            if (currentContract >= 0 && !_state.IsCommittedToCurrentContract)
             {
-                sb.Append(' ').Append(++n).Append(':').Append(((Contract) currentContract).Contre().Text());
-                sb.Append(' ').Append(++n).Append(':').Append(((Contract) currentContract).Recontra().Text());
+                if (((Contract) currentContract).IsPlain())
+                    sb.Append(' ').Append(++n).Append(':').Append(((Contract) currentContract).Contre().Text());
+                if (((Contract) currentContract).IsContre())
+                    sb.Append(' ').Append(++n).Append(':').Append(((Contract) currentContract).Recontra().Text());
             }
 
             sb.Append(')');
@@ -69,5 +77,7 @@ namespace Belote.Player.Human.Console
         {
             return _state.CurrentHand[0];
         }
+
+        #pragma warning restore CS8602
     }
 }

@@ -13,34 +13,35 @@ namespace Belote.Game
         {
             public PlayerStateView(GameState gameState, int playerIndex)
             {
-                _gameState = gameState;
+                GameState = gameState;
                 PlayerIndex = playerIndex;
                 CurrentHand = new ReadOnlyCollection<Card>(gameState.Match.PlayerCards[playerIndex]);
                 CurrentTrick = new ReadOnlyCollection<Card>(gameState.Match.TrickCards);
             }
 
-            private readonly GameState _gameState;
+            public GameState GameState { get; }
+            IGameState IPlayerStateView.GameState => GameState;
 
             public int PlayerIndex { get; }
             public IReadOnlyList<Card> CurrentHand { get; }
             public IReadOnlyList<Card> CurrentTrick { get; }
 
-            int? IPlayerStateView.CurrentTrickInitiator => _gameState.Match.TrickInitiator;
+            int? IPlayerStateView.CurrentTrickInitiator => GameState.Match.TrickInitiator;
 
-            int IPlayerStateView.CurrentMatchDealer => _gameState.Match.Dealer;
+            int IPlayerStateView.CurrentMatchDealer => GameState.Match.Dealer;
 
-            Contract? IPlayerStateView.CurrentContract => _gameState.Match.Contract;
+            Contract? IPlayerStateView.CurrentContract => GameState.Match.Contract;
 
-            bool IPlayerStateView.CommittedToCurrentContract => _gameState.Match.CommittedPlayer != null &&
-                    _gameState.PlayerTeams[PlayerIndex] == _gameState.PlayerTeams[_gameState.Match.CommittedPlayer.Value];
+            bool IPlayerStateView.IsCommittedToCurrentContract => GameState.Match.CommittedPlayer != null &&
+                    GameState.PlayerTeams[PlayerIndex] == GameState.PlayerTeams[GameState.Match.CommittedPlayer.Value];
 
 
             // Delegate events //
 
             event Action<int, Contract>? IPlayerStateView.OnBid
             {
-                add => _gameState.Match.OnBid += value;
-                remove => _gameState.Match.OnBid -= value;
+                add => GameState.Match.OnBid += value;
+                remove => GameState.Match.OnBid -= value;
             }
         }
     }
