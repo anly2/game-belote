@@ -118,7 +118,7 @@ namespace Belote.Game
                 playerIndex = _state.NextPlayer(playerIndex);
                 var player = _state.Players[playerIndex];
 
-                var bid = player.Bid();
+                var bid = _state.Match.CommittedPlayer == playerIndex ? null : player.Bid();
 
                 if (bid == null)
                 {
