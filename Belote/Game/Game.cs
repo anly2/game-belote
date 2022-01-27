@@ -42,7 +42,7 @@ namespace Belote.Game
         public static List<Card> GetPlayingDeck()
         {
             var deck = new List<Card>(Enum.GetValues<Card>());
-            deck.RemoveAll(card => card.Rank() < 6);
+            deck.RemoveAll(card => card.Rank() < 5);
             return deck;
         }
 
