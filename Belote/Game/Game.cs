@@ -129,6 +129,11 @@ namespace Belote.Game
                 if (bid <= currentBid)
                     throw new InvalidOperationException(
                         $"Player {playerIndex} made an invalid bid of {bid} when {currentBid} has already been called!");
+                if ((bid.Value.IsContre() || bid.Value.IsRecontra())
+                    && _match.CommittedPlayer.HasValue
+                    && _state.AreTeamMates(playerIndex, _match.CommittedPlayer.Value))
+                    throw new InvalidOperationException(
+                        $"Player {playerIndex} cannot double the bid of their teammate (player {_match.CommittedPlayer})!");
 
                 currentBid = bid;
                 _match.Bid(playerIndex, bid.Value);
