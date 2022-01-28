@@ -29,6 +29,11 @@ namespace CommonUtils
                 source.RemoveAt(0);
             }
         }
+
+        public static void Move<T>(this IList<T> source, T item, IList<T> target)
+        {
+            target.Add(item);
+            source.Remove(item);
+        }
     }
 }
-

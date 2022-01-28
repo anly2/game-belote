@@ -55,7 +55,7 @@ namespace Belote.Game
             public IList<Declaration> Declarations { get; }
             IReadOnlyList<Declaration> IMatchState.Declarations => new ReadOnlyCollection<Declaration>(Declarations);
 
-            public int? TrickInitiator { get; private set; }
+            public int? TrickInitiator { get; set; }
 
             public IList<Card> TrickCards { get; }
             IReadOnlyList<Card> IMatchState.TrickCards => new ReadOnlyCollection<Card>(TrickCards);

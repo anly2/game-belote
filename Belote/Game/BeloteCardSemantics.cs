@@ -24,7 +24,10 @@ namespace Belote.Game
             //7, 8, 9,  J,  Q, K, 10, A,  T9, TJ 
             0, 0, 0,  2,  3, 4, 10, 11, 14, 20
         };
-        
+
+
+        public static int Power(this Card card, Contract contract) => card.IsTrump(contract) ? card.PowerWhenTrump() : card.Power();
+
         public static int Power(this Card card) => CardPowers[card.Rank()];
         public static int PowerWhenTrump(this Card card) => CardTrumpPowers[card.Rank()];
         
@@ -49,10 +52,14 @@ namespace Belote.Game
             hand.Sort((a,b) =>
             {
                 var suitComparison = a.Suit().CompareTo(b.Suit());
-                return suitComparison != 0 ? suitComparison : -(a.IsTrump(contract)
-                        ? a.PowerWhenTrump().CompareTo(b.PowerWhenTrump())
-                        : a.Power().CompareTo(b.Power()));
+                return suitComparison != 0 ? suitComparison : -(a.CompareTo(b, contract ?? Contract.NoTrumps));
             });
+        }
+
+        public static int CompareTo(this Card card, Card other, Contract contract)
+        {
+            if (card.Suit() != other.Suit()) return +1;
+            return card.Power(contract).CompareTo(other.Power(contract));
         }
     }
 }

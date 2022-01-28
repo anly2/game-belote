@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using Belote.Domain;
 using Belote.Game.State;
@@ -72,7 +73,7 @@ namespace Belote.Game
 
         protected virtual void PlayMatch()
         {
-            // init match state
+            // Init match state
             var prevDealer = _match.Dealer;
 
             _match = _match.Fresh();
@@ -80,14 +81,20 @@ namespace Belote.Game
             _match.Dealer = _state.NextPlayer(prevDealer);
 
 
-            // play match
+            // Match bidding phase
             DealInitial();
             if (!GatherBids()) return;
             DealRemaining();
 
-            //PLAYERS
+            // Match trick playing phase
+            _match.TrickInitiator = _state.NextPlayer(_match.Dealer);
+            // Assume all players have the same number of cards
+            while (_match.PlayerCards[0].Count > 0)
+            {
+                PlayTrick();
+            }
 
-            // finish match
+            // Match scoring phase
             // var scores = CountScore();
             // for (var i = 0; i < State.Scores.Length; i++)
             //     State.Scores[i] += scores[i];
@@ -149,6 +156,48 @@ namespace Belote.Game
             }
 
             return currentBid != null;
+        }
+
+        protected virtual void PlayTrick()
+        {
+            var playerIndex = _match.TrickInitiator!.Value;
+            var playersCount = _state.Players.Count;
+            for (var i = 0; i < playersCount; i++)
+            {
+                playerIndex = _state.NextPlayer(playerIndex);
+                var player = _state.Players[playerIndex];
+
+                var played = player.Play(null);
+
+                Debug.Assert(_match.PlayerCards[playerIndex].Contains(played),
+                    $"Player {playerIndex} tried to play card {played.Text()} which is not in their hand!");
+                //Preferably check other rules, but in a real human game there is no Game Master that enforces those..
+
+                _match.PlayerCards[playerIndex].Move(played, _match.TrickCards);
+            }
+
+            var winner = DecideTrickWinner();
+            _match.TrickCards.Move(playersCount, _match.WonCards[winner]);
+            _match.TrickInitiator = winner;
+        }
+
+        protected virtual int DecideTrickWinner()
+        {
+            var strongestCard = _match.TrickCards[0];
+            var strongestPlayer = _match.TrickInitiator!.Value;
+
+            var contract = _match.Contract!.Value;
+            var playerIndex = strongestPlayer;
+            foreach (var card in _match.TrickCards)
+            {
+                playerIndex = _state.NextPlayer(playerIndex);
+                if (strongestCard.IsTrump(contract) || !card.IsTrump(contract)) continue;
+                if (strongestCard.CompareTo(card, contract) >= 0) continue;
+                strongestCard = card;
+                strongestPlayer = playerIndex;
+            }
+
+            return strongestPlayer;
         }
     }
 }
