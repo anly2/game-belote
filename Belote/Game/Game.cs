@@ -142,6 +142,8 @@ namespace Belote.Game
                     passes++;
                     continue;
                 }
+                passes = 0;
+
 
                 if (bid <= currentBid)
                     throw new InvalidOperationException(
@@ -189,11 +191,13 @@ namespace Belote.Game
 
             var contract = _match.Contract!.Value;
             var playerIndex = strongestPlayer;
-            foreach (var card in _match.TrickCards)
+            for (var i = 1; i < _match.TrickCards.Count; i++)
             {
+                var card = _match.TrickCards[i];
                 playerIndex = _state.NextPlayer(playerIndex);
-                if (strongestCard.IsTrump(contract) || !card.IsTrump(contract)) continue;
+
                 if (strongestCard.CompareTo(card, contract) >= 0) continue;
+
                 strongestCard = card;
                 strongestPlayer = playerIndex;
             }
