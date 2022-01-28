@@ -165,7 +165,7 @@ namespace Belote.Game
             var playersCount = _state.Players.Count;
             for (var i = 0; i < playersCount; i++)
             {
-                playerIndex = _state.NextPlayer(playerIndex);
+                if (i > 0) playerIndex = _state.NextPlayer(playerIndex);
                 var player = _state.Players[playerIndex];
 
                 var played = player.Play(null);
