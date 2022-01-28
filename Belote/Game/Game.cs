@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -58,12 +59,10 @@ namespace Belote.Game
 
         public virtual void PlayGame()
         {
+            ShuffleBeforeGame();
             //#! With this naive condition the rule of "Cannot win with Valat" is not implemented
             while (!State.Scores.Any(s => s >= WinningScore))
-            {
-                ShuffleBeforeGame();
                 PlayMatch();
-            }
         }
 
         protected virtual void ShuffleBeforeGame()
@@ -79,6 +78,7 @@ namespace Belote.Game
             _match = _match.Fresh();
 
             _match.Dealer = _state.NextPlayer(prevDealer);
+            CutDeckBeforeMatch(prevDealer);
 
 
             // Match bidding phase
@@ -90,14 +90,15 @@ namespace Belote.Game
             _match.TrickInitiator = _state.NextPlayer(_match.Dealer);
             // Assume all players have the same number of cards
             while (_match.PlayerCards[0].Count > 0)
-            {
                 PlayTrick();
-            }
 
             // Match scoring phase
+            DoScoring();
             // var scores = CountScore();
             // for (var i = 0; i < State.Scores.Length; i++)
             //     State.Scores[i] += scores[i];
+
+            MergeDeckBack();
         }
 
         protected virtual void DealInitial()
@@ -171,7 +172,7 @@ namespace Belote.Game
 
                 Debug.Assert(_match.PlayerCards[playerIndex].Contains(played),
                     $"Player {playerIndex} tried to play card {played.Text()} which is not in their hand!");
-                //Preferably check other rules, but in a real human game there is no Game Master that enforces those..
+                //Preferably check other rules, but in a real human game there is no Game Master that enforces those...
 
                 _match.PlayerCards[playerIndex].Move(played, _match.TrickCards);
             }
@@ -198,6 +199,59 @@ namespace Belote.Game
             }
 
             return strongestPlayer;
+        }
+
+        protected virtual void DoScoring()
+        {
+            var scores = new int[_state.PlayerTeams.Count];
+            for (var i = 0; i < _match.WonCards.Count; i++)
+            {
+                var score = CountScore(_match.WonCards[i], _match.Contract!.Value);
+                scores[_state.PlayerTeams[i]] += score;
+            }
+
+            var committedTeam = _state.PlayerTeams[_match.CommittedPlayer!.Value];
+            var scoreOfCommittedTeam = scores[committedTeam];
+            if (scoreOfCommittedTeam != scores.Max())
+            {
+                for (var i = 0; i < scores.Length; i++)
+                    scores[i] += scoreOfCommittedTeam / (scores.Length - 1);
+                scores[committedTeam] = 0;
+            }
+
+
+            for (var i = 0; i < scores.Length; i++)
+                _state.Scores[i] += (byte) MatchScoreToGameScore(scores[i], _match.Contract!.Value);
+        }
+
+        protected virtual int CountScore(IEnumerable<Card> pile, Contract contract) //TODO: include Declarations
+        {
+            return pile.Sum(c => c.Value(contract));
+        }
+
+        protected virtual int MatchScoreToGameScore(int matchScore, Contract contract)
+        {
+            //TODO: implement special rounding
+            return (int) Math.Round((double) matchScore / 10);
+        }
+
+
+
+        protected virtual void MergeDeckBack()
+        {
+            //TODO: implement as a Strategy
+            var piles = new List<IList<Card>>(_match.WonCards);
+            piles.Shuffle();
+            foreach (var pile in piles)
+            {
+                _state.Deck.AddRange(pile);
+                pile.Clear();
+            }
+        }
+
+        protected virtual void CutDeckBeforeMatch(int cuttingPlayer)
+        {
+            // _state.Players[cuttingPlayer].CutDeck();
         }
     }
 }

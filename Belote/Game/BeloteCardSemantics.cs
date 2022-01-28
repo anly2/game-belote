@@ -27,10 +27,10 @@ namespace Belote.Game
 
 
         public static int Power(this Card card, Contract contract) => card.IsTrump(contract) ? card.PowerWhenTrump() : card.Power();
-
         public static int Power(this Card card) => CardPowers[card.Rank()];
         public static int PowerWhenTrump(this Card card) => CardTrumpPowers[card.Rank()];
         
+        public static int Value(this Card card, Contract contract) => card.IsTrump() ? card.ValueWhenTrump() : card.Value();
         public static int Value(this Card card) => CardValues[card.Power()];
         public static int ValueWhenTrump(this Card card) => CardValues[card.PowerWhenTrump()];
 
