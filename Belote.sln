@@ -4,7 +4,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Belote", "Belote\Belote.csp
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CommonUtils", "CommonUtils\CommonUtils.csproj", "{5F729F9B-E128-4980-A920-BD2BB933D8CB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestBelote", "TestBelote\TestBelote.csproj", "{CE906DEC-D4D4-4841-8F2F-398ED0D2BCF5}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Belote.Tests", "Belote.Tests\Belote.Tests.csproj", "{CE906DEC-D4D4-4841-8F2F-398ED0D2BCF5}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
