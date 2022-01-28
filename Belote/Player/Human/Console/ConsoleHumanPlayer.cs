@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using Belote.Domain;
 using Belote.Game.State;
@@ -49,34 +51,54 @@ namespace Belote.Player.Human.Console
 
         private void PrintBidOptions()
         {
-            var sb = new StringBuilder();
-            sb.Append('(');
-            sb.Append("0:pass");
-
             var currentContract = (int?) _state?.CurrentContract ?? -1;
 
-            var n = 0;
-            foreach (var contract in PlainContracts)
-            {
-                ++n;
-                sb.Append(' ').Append((int) contract <= currentContract ?  "-" : n.ToString()).Append(':').Append(contract.Text());
-            }
+            var options = new[] { ("pass", true) }.Concat(
+                PlainContracts.Select(contract => (contract.Text(), (int) contract > currentContract)) ).ToList();
 
             if (currentContract >= 0 && !_state!.IsCommittedToCurrentContract)
             {
-                if (((Contract) currentContract).IsPlain())
-                    sb.Append(' ').Append(++n).Append(':').Append(((Contract) currentContract).Contre().Text());
-                if (((Contract) currentContract).IsContre())
-                    sb.Append(' ').Append(++n).Append(':').Append(((Contract) currentContract).Recontra().Text());
+                var c = (Contract) currentContract;
+                options.Add( ((c.IsPlain() ? c.Contre() : c.Recontra()).Text(), true) );
             }
 
-            sb.Append(')');
-            System.Console.Out.WriteLine(sb.ToString());
+            PrintOptions(options.ToArray());
         }
 
         public Card Play(List<Declaration> declarations)
         {
-            return _state!.CurrentHand[0];
+            Print($"Your turn to play : ({_state?.CurrentContract})  {_state?.CurrentTrick.Text()}");
+            Print("Cards: " + _state!.CurrentHand.Text());
+
+            PrintOptions(1, _state!.CurrentHand.Select(c => (c.Text(), /*TODO: CanPlay(*/true)).ToArray());
+
+            if (!int.TryParse(System.Console.ReadLine(), out var choice))
+                throw new ArgumentException("Invalid choice!");
+            choice--;
+
+            return _state!.CurrentHand[choice];
+        }
+
+
+
+        private static void PrintOptions(params (string text, bool available)[] options)
+        {
+            PrintOptions(0, options);
+        }
+        private static void PrintOptions(int start, params (string text, bool available)[] options)
+        {
+            var sb = new StringBuilder();
+            sb.Append('(');
+
+            var n = start;
+            foreach (var (text, available) in options)
+            {
+                sb.Append(' ').Append(available ? n.ToString() : "-").Append(':').Append(text);
+                n++;
+            }
+
+            sb.Append(')');
+            System.Console.Out.WriteLine(sb.ToString());
         }
     }
 }

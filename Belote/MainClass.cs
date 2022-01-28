@@ -14,8 +14,8 @@ namespace Belote
             var players = new List<IPlayer>(new IPlayer[]{
                 new ConsoleHumanPlayer("A"),
                 new ConsoleHumanPlayer("B"),
-                new ConsoleHumanPlayer("C"),
-                new ConsoleHumanPlayer("D")
+                new ConsoleHumanPlayer("A"),
+                new ConsoleHumanPlayer("B")
                 // new BasicAiPlayer(),
                 // new BasicAiPlayer(),
                 // new BasicAiPlayer()
