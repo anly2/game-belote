@@ -1,18 +1,20 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using Belote.Domain;
 using Belote.Game.State;
 using static Belote.Domain.ContractUtils;
+using static Belote.Player.Ai.GameUtils;
 
 namespace Belote.Player.Ai.Basic
 {
     public class BasicAiPlayer : IPlayer
     {
-        private static readonly IReadOnlyList<IReadOnlyList<Card>> BidPatterns = new[]
+        private static readonly IReadOnlyList<IReadOnlyList<CardSelector>> BidPatterns = new[]
         {
             new [] {Card.Spades_J, Card.Spades_9},
             new [] {Card.Spades_J, Card.Diamonds_A, Card.Hearts_A}
-        };
+        }.Select(cards => cards.Select(c => new CardSelector(c)).ToList().AsReadOnly()).ToList().AsReadOnly();
 
 
         // ReSharper disable once InconsistentNaming
@@ -22,13 +24,12 @@ namespace Belote.Player.Ai.Basic
         {
             State = playerStateView;
         }
-        #pragma warning disable CS8602
 
         public Contract? Bid()
         {
             foreach (var pattern in BidPatterns)
             {
-                var found = State.CurrentHand.MatchRanks(pattern);
+                var found = State!.CurrentHand.MatchRanks(pattern);
                 if (found != null)
                     return PlainContracts[found[0].Suit()];
             }
@@ -39,7 +40,5 @@ namespace Belote.Player.Ai.Basic
         {
             throw new NotImplementedException();
         }
-
-        #pragma warning restore CS8602
     }
 }

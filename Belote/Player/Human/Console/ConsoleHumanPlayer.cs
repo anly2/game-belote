@@ -9,6 +9,7 @@ namespace Belote.Player.Human.Console
     public class ConsoleHumanPlayer : IPlayer
     {
         private IPlayerStateView? _state;
+        // ReSharper disable once InconsistentNaming
         private readonly string? Name;
 
         public ConsoleHumanPlayer(string? name)
@@ -20,7 +21,6 @@ namespace Belote.Player.Human.Console
         {
             _state = playerStateView;
         }
-        #pragma warning disable CS8602
 
         protected void Print(string message)
         {
@@ -31,7 +31,7 @@ namespace Belote.Player.Human.Console
         public Contract? Bid()
         {
             Print("Your turn to bid:");
-            Print("Cards: " + _state.CurrentHand.Text());
+            Print("Cards: " + _state!.CurrentHand.Text());
 
             PrintBidOptions();
             if (!int.TryParse(System.Console.ReadLine(), out var bid)) bid = 0;
@@ -62,7 +62,7 @@ namespace Belote.Player.Human.Console
                 sb.Append(' ').Append((int) contract <= currentContract ?  "-" : n.ToString()).Append(':').Append(contract.Text());
             }
 
-            if (currentContract >= 0 && !_state.IsCommittedToCurrentContract)
+            if (currentContract >= 0 && !_state!.IsCommittedToCurrentContract)
             {
                 if (((Contract) currentContract).IsPlain())
                     sb.Append(' ').Append(++n).Append(':').Append(((Contract) currentContract).Contre().Text());
@@ -76,9 +76,7 @@ namespace Belote.Player.Human.Console
 
         public Card Play(List<Declaration> declarations)
         {
-            return _state.CurrentHand[0];
+            return _state!.CurrentHand[0];
         }
-
-        #pragma warning restore CS8602
     }
 }
