@@ -186,23 +186,10 @@ namespace Belote.Game
 
         protected virtual int DecideTrickWinner()
         {
-            var strongestCard = _match.TrickCards[0];
-            var strongestPlayer = _match.TrickInitiator!.Value;
-
             var contract = _match.Contract!.Value;
-            var playerIndex = strongestPlayer;
-            for (var i = 1; i < _match.TrickCards.Count; i++)
-            {
-                var card = _match.TrickCards[i];
-                playerIndex = _state.NextPlayer(playerIndex);
-
-                if (strongestCard.CompareTo(card, contract) >= 0) continue;
-
-                strongestCard = card;
-                strongestPlayer = playerIndex;
-            }
-
-            return strongestPlayer;
+            var offset = _match.TrickCards.IndexOf(_match.TrickCards.MaxBy(c => c,
+                Comparer<Card>.Create((a, b) => a.CompareTo(b, contract))));
+            return _state.NextPlayer(_match.TrickInitiator, offset);
         }
 
         protected virtual void DoScoring()

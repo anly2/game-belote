@@ -5,12 +5,12 @@ namespace Belote.Game
 {
     public static class IndexUtils
     {
-        public static int NextPlayer(this IGameState gameState, int? playerIndex)
+        public static int NextPlayer(this IGameState gameState, int? playerIndex, int step = 1)
         {
             if (playerIndex == null)
                 return 0;
 
-            return (playerIndex.Value + 1) % gameState.Players.Count;
+            return (playerIndex.Value + step) % gameState.Players.Count;
         }
 
         public static bool AreTeamMates(this IGameState gameState, int playerA, int playerB)
