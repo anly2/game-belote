@@ -52,7 +52,7 @@ namespace Belote.Game
             hand.Sort((a,b) =>
             {
                 var suitComparison = a.Suit().CompareTo(b.Suit());
-                return suitComparison != 0 ? suitComparison : -(a.CompareTo(b, contract ?? Contract.NoTrumps));
+                return suitComparison != 0 ? suitComparison : a.CompareTo(b, contract ?? Contract.NoTrumps);
             });
         }
 

@@ -21,7 +21,7 @@ public class CardSemanticsTests
 
 
     [Fact]
-    public void CardHands_CanBeSorted_ByPower_AscSuitDescRank_NoContract()
+    public void CardHands_CanBeSorted_ByPower_AscSuitAscRank_NoContract()
     {
         var hand = GetTestCardHand();
 
@@ -29,14 +29,14 @@ public class CardSemanticsTests
 
         AssertThat(hand).ContainsExactly(
             Card.Clubs_K,
-            Card.Diamonds_9, Card.Diamonds_8, Card.Diamonds_7,
+            Card.Diamonds_7, Card.Diamonds_8, Card.Diamonds_9,
             Card.Hearts_Q,
-            Card.Spades_A, Card.Spades_10, Card.Spades_J
+            Card.Spades_J, Card.Spades_10, Card.Spades_A
         );
     }
 
     [Fact]
-    public void CardHands_CanBeSorted_ByPower_AscSuitDescRank_OneTrumpContract()
+    public void CardHands_CanBeSorted_ByPower_AscSuitAscRank_OneTrumpContract()
     {
         var hand = GetTestCardHand();
 
@@ -44,9 +44,9 @@ public class CardSemanticsTests
 
         AssertThat(hand).ContainsExactly(
             Card.Clubs_K,
-            Card.Diamonds_9, Card.Diamonds_8, Card.Diamonds_7,
+            Card.Diamonds_7, Card.Diamonds_8, Card.Diamonds_9,
             Card.Hearts_Q,
-            Card.Spades_J, Card.Spades_A, Card.Spades_10
+            Card.Spades_10, Card.Spades_A, Card.Spades_J
         );
     }
 }
