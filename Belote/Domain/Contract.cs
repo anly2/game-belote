@@ -6,9 +6,9 @@
         Clubs,
         Clubs_Contre,
         Clubs_Recontra,
-        Diamond,
-        Diamond_Contre,
-        Diamond_Recontra,
+        Diamonds,
+        Diamonds_Contre,
+        Diamonds_Recontra,
         Hearts,
         Hearts_Contre,
         Hearts_Recontra,
@@ -33,7 +33,7 @@
         //IsPlain
         //IsContre
         //IsRecontra
-        public static readonly Contract[] PlainContracts = {Contract.Clubs, Contract.Diamond, Contract.Hearts, Contract.Spades, Contract.NoTrumps, Contract.AllTrumps};
+        public static readonly Contract[] PlainContracts = {Contract.Clubs, Contract.Diamonds, Contract.Hearts, Contract.Spades, Contract.NoTrumps, Contract.AllTrumps};
         private static readonly string[] ContractTexts =
         {
             "♣", "X♣", "XX♣",

@@ -9,13 +9,13 @@ public class ContractTest
     [Fact]
     public void ContractsAreOrdered()
     {
-        AssertThat(Contract.Clubs < Contract.Diamond).IsTrue();
-        AssertThat(Contract.Diamond < Contract.Hearts).IsTrue();
+        AssertThat(Contract.Clubs < Contract.Diamonds).IsTrue();
+        AssertThat(Contract.Diamonds < Contract.Hearts).IsTrue();
         AssertThat(Contract.Hearts < Contract.Spades).IsTrue();
 
         AssertThat(Contract.Clubs < Contract.Hearts).IsTrue();
         AssertThat(Contract.Clubs < Contract.Spades).IsTrue();
-        AssertThat(Contract.Diamond < Contract.Spades).IsTrue();
+        AssertThat(Contract.Diamonds < Contract.Spades).IsTrue();
     }
 
     [Fact]
@@ -24,7 +24,7 @@ public class ContractTest
         AssertThat(Contract.Clubs < Contract.Clubs_Contre).IsTrue();
         AssertThat(Contract.Clubs < Contract.Clubs_Recontra).IsTrue();
         AssertThat(Contract.Clubs_Contre < Contract.Clubs_Recontra).IsTrue();
-        AssertThat(Contract.Clubs_Recontra < Contract.Diamond).IsTrue();
+        AssertThat(Contract.Clubs_Recontra < Contract.Diamonds).IsTrue();
     }
 
     [Fact]
@@ -40,15 +40,15 @@ public class ContractTest
         AssertThat(Contract.Clubs_Recontra.Contre()).IsEqualTo(Contract.Clubs_Contre);
         AssertThat(Contract.Clubs_Recontra.Recontra()).IsEqualTo(Contract.Clubs_Recontra);
 
-        AssertThat(Contract.Diamond.Plain()).IsEqualTo(Contract.Diamond);
-        AssertThat(Contract.Diamond.Contre()).IsEqualTo(Contract.Diamond_Contre);
-        AssertThat(Contract.Diamond.Recontra()).IsEqualTo(Contract.Diamond_Recontra);
-        AssertThat(Contract.Diamond_Contre.Plain()).IsEqualTo(Contract.Diamond);
-        AssertThat(Contract.Diamond_Contre.Contre()).IsEqualTo(Contract.Diamond_Contre);
-        AssertThat(Contract.Diamond_Contre.Recontra()).IsEqualTo(Contract.Diamond_Recontra);
-        AssertThat(Contract.Diamond_Recontra.Plain()).IsEqualTo(Contract.Diamond);
-        AssertThat(Contract.Diamond_Recontra.Contre()).IsEqualTo(Contract.Diamond_Contre);
-        AssertThat(Contract.Diamond_Recontra.Recontra()).IsEqualTo(Contract.Diamond_Recontra);
+        AssertThat(Contract.Diamonds.Plain()).IsEqualTo(Contract.Diamonds);
+        AssertThat(Contract.Diamonds.Contre()).IsEqualTo(Contract.Diamonds_Contre);
+        AssertThat(Contract.Diamonds.Recontra()).IsEqualTo(Contract.Diamonds_Recontra);
+        AssertThat(Contract.Diamonds_Contre.Plain()).IsEqualTo(Contract.Diamonds);
+        AssertThat(Contract.Diamonds_Contre.Contre()).IsEqualTo(Contract.Diamonds_Contre);
+        AssertThat(Contract.Diamonds_Contre.Recontra()).IsEqualTo(Contract.Diamonds_Recontra);
+        AssertThat(Contract.Diamonds_Recontra.Plain()).IsEqualTo(Contract.Diamonds);
+        AssertThat(Contract.Diamonds_Recontra.Contre()).IsEqualTo(Contract.Diamonds_Contre);
+        AssertThat(Contract.Diamonds_Recontra.Recontra()).IsEqualTo(Contract.Diamonds_Recontra);
 
         AssertThat(Contract.Hearts.Plain()).IsEqualTo(Contract.Hearts);
         AssertThat(Contract.Hearts.Contre()).IsEqualTo(Contract.Hearts_Contre);
