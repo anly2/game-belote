@@ -1,8 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Text;
 using Belote.Domain;
 using Belote.Game.State;
+using static Belote.Domain.ContractUtils;
 
 namespace Belote.Player.Human.Console
 {
@@ -44,7 +44,7 @@ namespace Belote.Player.Human.Console
             }
 
             if (bid < 0) return null;
-            return ContractUtils.PlainContracts[bid];
+            return PlainContracts[bid];
         }
 
         private void PrintBidOptions()
@@ -56,7 +56,7 @@ namespace Belote.Player.Human.Console
             var currentContract = (int?) _state?.CurrentContract ?? -1;
 
             var n = 0;
-            foreach (var contract in ContractUtils.PlainContracts)
+            foreach (var contract in PlainContracts)
             {
                 ++n;
                 sb.Append(' ').Append((int) contract <= currentContract ?  "-" : n.ToString()).Append(':').Append(contract.Text());

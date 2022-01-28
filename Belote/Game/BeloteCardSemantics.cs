@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using Belote.Domain;
+using static Belote.Domain.ContractUtils;
 
 namespace Belote.Game
 {
@@ -38,7 +39,7 @@ namespace Belote.Game
                 null => false,
                 Contract.NoTrumps => false,
                 Contract.AllTrumps => true,
-                _ => ContractUtils.PlainContracts[card.Suit()] == contract
+                _ => PlainContracts[card.Suit()] == contract
             };
         }
 

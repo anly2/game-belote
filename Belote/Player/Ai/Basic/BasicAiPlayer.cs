@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using Belote.Domain;
 using Belote.Game.State;
+using static Belote.Domain.ContractUtils;
 
 namespace Belote.Player.Ai.Basic
 {
@@ -29,7 +30,7 @@ namespace Belote.Player.Ai.Basic
             {
                 var found = State.CurrentHand.MatchRanks(pattern);
                 if (found != null)
-                    return ContractUtils.PlainContracts[found[0].Suit()];
+                    return PlainContracts[found[0].Suit()];
             }
             return null;
         }
