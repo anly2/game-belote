@@ -49,4 +49,40 @@ public class CardSemanticsTests
             Card.Spades_10, Card.Spades_A, Card.Spades_J
         );
     }
+
+    [Fact]
+    public void CardComparison_SameSuit_HigherRank_NotTrumps_Wins()
+    {
+        AssertThat(Card.Diamonds_Q.CompareTo(Card.Diamonds_J, Contract.Spades) > 0);
+        AssertThat(Card.Diamonds_J.CompareTo(Card.Diamonds_Q, Contract.Spades) < 0);
+    }
+
+    [Fact]
+    public void CardComparison_SameSuit_HigherRank_WhenTrumps_Wins()
+    {
+        AssertThat(Card.Diamonds_Q.CompareTo(Card.Diamonds_J, Contract.Diamonds) < 0);
+        AssertThat(Card.Diamonds_J.CompareTo(Card.Diamonds_Q, Contract.Diamonds) > 0);
+    }
+
+    [Fact]
+    public void CardComparison_DifferentSuits_NoTrumps_FirstWins()
+    {
+        AssertThat(Card.Diamonds_Q.CompareTo(Card.Spades_A, Contract.NoTrumps) > 0);
+        AssertThat(Card.Spades_A.CompareTo(Card.Diamonds_Q, Contract.NoTrumps) > 0);
+    }
+
+    [Fact]
+    public void CardComparison_DifferentSuits_BothTrumps_FirstWins()
+    {
+        AssertThat(Card.Diamonds_Q.CompareTo(Card.Spades_A, Contract.AllTrumps) > 0);
+        AssertThat(Card.Spades_A.CompareTo(Card.Diamonds_Q, Contract.AllTrumps) > 0);
+    }
+
+    [Fact]
+    public void CardComparison_DifferentSuits_OneIsTrump_TrumpWins()
+    {
+        AssertThat(Card.Diamonds_Q.CompareTo(Card.Spades_A, Contract.Diamonds) > 0);
+        AssertThat(Card.Diamonds_Q.CompareTo(Card.Spades_A, Contract.Spades) < 0);
+        AssertThat(Card.Spades_A.CompareTo(Card.Diamonds_Q, Contract.Diamonds) < 0);
+    }
 }

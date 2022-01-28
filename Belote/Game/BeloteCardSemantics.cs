@@ -58,7 +58,8 @@ namespace Belote.Game
 
         public static int CompareTo(this Card card, Card other, Contract contract)
         {
-            if (card.Suit() != other.Suit()) return +1;
+            if (card.Suit() != other.Suit())
+                return other.IsTrump() && !card.IsTrump() ? -1 : +1;
             return card.Power(contract).CompareTo(other.Power(contract));
         }
     }
