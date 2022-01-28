@@ -26,16 +26,16 @@ namespace Belote.Game
         };
 
 
-        public static int Power(this Card card, Contract contract) => card.IsTrump(contract) ? card.PowerWhenTrump() : card.Power();
+        public static int Power(this Card card, Contract? contract) => card.IsTrump(contract) ? card.PowerWhenTrump() : card.Power();
         public static int Power(this Card card) => CardPowers[card.Rank()];
         public static int PowerWhenTrump(this Card card) => CardTrumpPowers[card.Rank()];
         
-        public static int Value(this Card card, Contract contract) => card.IsTrump() ? card.ValueWhenTrump() : card.Value();
+        public static int Value(this Card card, Contract? contract) => card.IsTrump(contract) ? card.ValueWhenTrump() : card.Value();
         public static int Value(this Card card) => CardValues[card.Power()];
         public static int ValueWhenTrump(this Card card) => CardValues[card.PowerWhenTrump()];
 
 
-        public static bool IsTrump(this Card card, Contract? contract = null)
+        public static bool IsTrump(this Card card, Contract? contract)
         {
             return contract?.Plain() switch
             {
@@ -47,7 +47,7 @@ namespace Belote.Game
         }
 
 
-        public static void SortHand(this List<Card> hand, Contract? contract = null)
+        public static void SortHand(this List<Card> hand, Contract? contract)
         {
             hand.Sort((a,b) =>
             {
@@ -59,7 +59,7 @@ namespace Belote.Game
         public static int CompareTo(this Card card, Card other, Contract contract)
         {
             if (card.Suit() != other.Suit())
-                return other.IsTrump() && !card.IsTrump() ? -1 : +1;
+                return other.IsTrump(contract) && !card.IsTrump(contract) ? -1 : +1;
             return card.Power(contract).CompareTo(other.Power(contract));
         }
     }

@@ -25,7 +25,7 @@ public class CardSemanticsTests
     {
         var hand = GetTestCardHand();
 
-        hand.SortHand();
+        hand.SortHand(null);
 
         AssertThat(hand).ContainsExactly(
             Card.Clubs_K,
@@ -53,36 +53,39 @@ public class CardSemanticsTests
     [Fact]
     public void CardComparison_SameSuit_HigherRank_NotTrumps_Wins()
     {
-        AssertThat(Card.Diamonds_Q.CompareTo(Card.Diamonds_J, Contract.Spades) > 0);
-        AssertThat(Card.Diamonds_J.CompareTo(Card.Diamonds_Q, Contract.Spades) < 0);
+        AssertThat(Card.Diamonds_Q.CompareTo(Card.Diamonds_J, Contract.Spades)).IsGreaterThan(0);
+        AssertThat(Card.Diamonds_J.CompareTo(Card.Diamonds_Q, Contract.Spades)).IsLesserThan(0);
     }
 
     [Fact]
     public void CardComparison_SameSuit_HigherRank_WhenTrumps_Wins()
     {
-        AssertThat(Card.Diamonds_Q.CompareTo(Card.Diamonds_J, Contract.Diamonds) < 0);
-        AssertThat(Card.Diamonds_J.CompareTo(Card.Diamonds_Q, Contract.Diamonds) > 0);
+        AssertThat(Card.Diamonds_Q.CompareTo(Card.Diamonds_J, Contract.Diamonds)).IsLesserThan(0);
+        AssertThat(Card.Diamonds_J.CompareTo(Card.Diamonds_Q, Contract.Diamonds)).IsGreaterThan(0);
     }
 
     [Fact]
     public void CardComparison_DifferentSuits_NoTrumps_FirstWins()
     {
-        AssertThat(Card.Diamonds_Q.CompareTo(Card.Spades_A, Contract.NoTrumps) > 0);
-        AssertThat(Card.Spades_A.CompareTo(Card.Diamonds_Q, Contract.NoTrumps) > 0);
+        AssertThat(Card.Diamonds_Q.CompareTo(Card.Spades_A, Contract.NoTrumps)).IsGreaterThan(0);
+        AssertThat(Card.Spades_A.CompareTo(Card.Diamonds_Q, Contract.NoTrumps)).IsGreaterThan(0);
     }
 
     [Fact]
     public void CardComparison_DifferentSuits_BothTrumps_FirstWins()
     {
-        AssertThat(Card.Diamonds_Q.CompareTo(Card.Spades_A, Contract.AllTrumps) > 0);
-        AssertThat(Card.Spades_A.CompareTo(Card.Diamonds_Q, Contract.AllTrumps) > 0);
+        AssertThat(Card.Diamonds_Q.CompareTo(Card.Spades_A, Contract.AllTrumps)).IsGreaterThan(0);
+        AssertThat(Card.Spades_A.CompareTo(Card.Diamonds_Q, Contract.AllTrumps)).IsGreaterThan(0);
     }
 
     [Fact]
     public void CardComparison_DifferentSuits_OneIsTrump_TrumpWins()
     {
-        AssertThat(Card.Diamonds_Q.CompareTo(Card.Spades_A, Contract.Diamonds) > 0);
-        AssertThat(Card.Diamonds_Q.CompareTo(Card.Spades_A, Contract.Spades) < 0);
-        AssertThat(Card.Spades_A.CompareTo(Card.Diamonds_Q, Contract.Diamonds) < 0);
+        AssertThat(Card.Hearts_K.CompareTo(Card.Diamonds_Q, Contract.Hearts)).IsGreaterThan(0);
+        AssertThat(Card.Diamonds_Q.CompareTo(Card.Hearts_K, Contract.Hearts)).IsLesserThan(0);
+
+        AssertThat(Card.Diamonds_Q.CompareTo(Card.Spades_A, Contract.Diamonds)).IsGreaterThan(0);
+        AssertThat(Card.Diamonds_Q.CompareTo(Card.Spades_A, Contract.Spades)).IsLesserThan(0);
+        AssertThat(Card.Spades_A.CompareTo(Card.Diamonds_Q, Contract.Diamonds)).IsLesserThan(0);
     }
 }
