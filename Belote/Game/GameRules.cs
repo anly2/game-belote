@@ -17,9 +17,15 @@ namespace Belote.Game
 
             if (askedSuit != card.Suit())
             {
-                // trumping OR no card of asked suit
-                return (askedIsNotTrump && card.IsTrump(contract))
-                       || handCards.All(c => askedSuit != c.Suit());
+                // has a card of the asked suit
+                if (handCards.Any(c => askedSuit == c.Suit()))
+                    return false;
+
+                // can overrule with trump
+                if (askedIsNotTrump && handCards.Any(c => c.IsTrump(contract)))
+                    return card.IsTrump(contract);
+
+                return true;
             }
 
             // Same suit
