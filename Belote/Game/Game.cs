@@ -194,13 +194,23 @@ namespace Belote.Game
 
         protected virtual void DoScoring()
         {
-            var scores = new int[_state.PlayerTeams.Count];
+            var scores = new int[_state.Scores.Count];
+
+            //Count the card scores
             for (var i = 0; i < _match.WonCards.Count; i++)
             {
                 var score = CountScore(_match.WonCards[i], _match.Contract!.Value);
                 scores[_state.PlayerTeams[i]] += score;
             }
 
+            //Add the 10 points for last trick won
+            var lastTrickWinner = _match.TrickInitiator!.Value;
+            scores[_state.PlayerTeams[lastTrickWinner]] += 10;
+
+            //Include declarations
+            //TODO
+
+            //If committed team failed to fulfil the contract, spread there points to the others
             var committedTeam = _state.PlayerTeams[_match.CommittedPlayer!.Value];
             var scoreOfCommittedTeam = scores[committedTeam];
             if (scoreOfCommittedTeam != scores.Max())
@@ -210,7 +220,7 @@ namespace Belote.Game
                 scores[committedTeam] = 0;
             }
 
-
+            //Convert match points to game points
             for (var i = 0; i < scores.Length; i++)
                 _state.Scores[i] += (byte) MatchScoreToGameScore(scores[i], _match.Contract!.Value);
         }
