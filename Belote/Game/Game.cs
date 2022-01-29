@@ -7,6 +7,7 @@ using Belote.Domain;
 using Belote.Game.State;
 using Belote.Player;
 using CommonUtils;
+using static System.String;
 
 namespace Belote.Game
 {
@@ -62,7 +63,11 @@ namespace Belote.Game
             ShuffleBeforeGame();
             //#! With this naive condition the rule of "Cannot win with Valat" is not implemented
             while (!State.Scores.Any(s => s >= WinningScore))
+            {
                 PlayMatch();
+                //TODO: use events
+                Console.Out.WriteLine("Match ended. Score: " + Join(", ", _state.Scores));
+            }
         }
 
         protected virtual void ShuffleBeforeGame()
@@ -83,7 +88,11 @@ namespace Belote.Game
 
             // Match bidding phase
             DealInitial();
-            if (!GatherBids()) return;
+            if (!GatherBids())
+            {
+                MergeDeckBack(_match.PlayerCards);
+                return;
+            }
             DealRemaining();
 
             // Match trick playing phase
@@ -98,7 +107,7 @@ namespace Belote.Game
             // for (var i = 0; i < State.Scores.Length; i++)
             //     State.Scores[i] += scores[i];
 
-            MergeDeckBack();
+            MergeDeckBack(_match.WonCards);
         }
 
         protected virtual void DealInitial()
@@ -238,10 +247,10 @@ namespace Belote.Game
 
 
 
-        protected virtual void MergeDeckBack()
+        protected virtual void MergeDeckBack(IList<List<Card>> piles)
         {
             //TODO: implement as a Strategy
-            var piles = new List<IList<Card>>(_match.WonCards);
+            piles = new List<List<Card>>(piles);
             piles.Shuffle();
             foreach (var pile in piles)
             {

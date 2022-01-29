@@ -20,7 +20,7 @@ namespace Belote.Game
                 Contract = null;
                 Declarations = new List<Declaration>();
                 TrickCards = new List<Card>();
-                WonCards = new List<IList<Card>>();
+                WonCards = new List<List<Card>>();
 
                 for (int i = 0; i < playerCount; i++)
                 {
@@ -60,7 +60,7 @@ namespace Belote.Game
             public IList<Card> TrickCards { get; }
             IReadOnlyList<Card> IMatchState.TrickCards => new ReadOnlyCollection<Card>(TrickCards);
 
-            public IList<IList<Card>> WonCards { get; }
+            public IList<List<Card>> WonCards { get; }
             IReadOnlyList<IReadOnlyList<Card>> IMatchState.WonCards => WonCards.Select(s => new ReadOnlyCollection<Card>(s)).ToList().AsReadOnly();
 
 
