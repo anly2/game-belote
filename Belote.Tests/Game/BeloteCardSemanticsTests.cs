@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using Belote.Domain;
 using Belote.Game;
 using Xunit;
@@ -87,5 +88,35 @@ public class CardSemanticsTests
         AssertThat(Card.Diamonds_Q.CompareTo(Card.Spades_A, Contract.Diamonds)).IsGreaterThan(0);
         AssertThat(Card.Diamonds_Q.CompareTo(Card.Spades_A, Contract.Spades)).IsLesserThan(0);
         AssertThat(Card.Spades_A.CompareTo(Card.Diamonds_Q, Contract.Diamonds)).IsLesserThan(0);
+    }
+
+
+    [Fact]
+    public void StrongestCard_ValuesNonTrumpCardsCorrectly()
+    {
+        AssertThat(new[] {Card.Clubs_J, Card.Hearts_8, Card.Clubs_10, Card.Clubs_A}.StrongestCard(Contract.NoTrumps))
+            .IsEqualTo(Card.Clubs_A);
+    }
+
+    [Fact]
+    public void StrongestCard_ValuesTrumpCardsCorrectly()
+    {
+        AssertThat(new[] {Card.Clubs_J, Card.Hearts_8, Card.Clubs_10, Card.Diamonds_A}.StrongestCard(Contract.AllTrumps))
+            .IsEqualTo(Card.Clubs_J);
+    }
+
+    [Fact]
+    public void StrongestCard_HonorsTrumping()
+    {
+        AssertThat(new[] {Card.Clubs_J, Card.Hearts_8, Card.Clubs_10, Card.Diamonds_A}.StrongestCard(Contract.Hearts))
+            .IsEqualTo(Card.Hearts_8);
+    }
+
+    [Fact]
+    public void StrongestCard_HonorsAskedSuit()
+    {
+        // NoTrumps: J♠, 8♥, 10♠, A♦  --  should pick 10♠ and not A♦
+        AssertThat(new[] {Card.Clubs_J, Card.Hearts_8, Card.Clubs_10, Card.Diamonds_A}.StrongestCard(Contract.NoTrumps))
+            .IsEqualTo(Card.Clubs_10);
     }
 }

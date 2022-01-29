@@ -67,7 +67,17 @@ namespace Belote.Game
 
         public static Card StrongestCard(this IEnumerable<Card> cards, Contract? contract)
         {
-            return cards.Max(Comparer<Card>.Create((a, b) => a.CompareTo(b, contract)));
+            //Linq's .Max(comparer) compares the values the other way around
+            //and the direction is important to achieve 'asked suit wins, unless trumped'
+
+            Card? max = null;
+            foreach (var card in cards)
+            {
+                if (max == null || max?.CompareTo(card, contract) < 0)
+                    max = card;
+            }
+
+            return max!.Value;
         }
     }
 }
