@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Belote.Domain;
+using Belote.Game;
 using Belote.Game.State;
 using static Belote.Domain.ContractUtils;
 
@@ -67,16 +68,20 @@ namespace Belote.Player.Human.Console
 
         public Card Play(List<Declaration> declarations)
         {
-            Print($"Your turn to play : ({_state?.CurrentContract})  {_state?.CurrentTrick.Text()}");
-            Print("Cards: " + _state!.CurrentHand.Text());
+            var contract = _state!.CurrentContract!.Value;
+            var hand = _state!.CurrentHand;
+            var trick = _state!.CurrentTrick;
 
-            PrintOptions(1, _state!.CurrentHand.Select(c => (c.Text(), /*TODO: CanPlay(*/true)).ToArray());
+            Print($"Your turn to play : ({contract})  {trick.Text()}");
+            Print("Cards: " + hand.Text());
+
+            PrintOptions(1, hand.Select(c => (c.Text(), c.CanBePlayed(contract, hand, trick))).ToArray());
 
             if (!int.TryParse(System.Console.ReadLine(), out var choice))
                 throw new ArgumentException("Invalid choice!");
             choice--;
 
-            return _state!.CurrentHand[choice];
+            return hand[choice];
         }
 
 

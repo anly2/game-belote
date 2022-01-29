@@ -195,9 +195,8 @@ namespace Belote.Game
 
         protected virtual int DecideTrickWinner()
         {
-            var contract = _match.Contract!.Value;
-            var offset = _match.TrickCards.IndexOf(_match.TrickCards.MaxBy(c => c,
-                Comparer<Card>.Create((a, b) => a.CompareTo(b, contract))));
+            //FIXME: WRONG: trick (NoTrumps)  J♠, 8♥, 10♠, A♦  -- decided winner is A♦
+            var offset = _match.TrickCards.IndexOf(_match.TrickCards.StrongestCard(_match.Contract));
             return _state.NextPlayer(_match.TrickInitiator, offset);
         }
 

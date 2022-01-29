@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
 using Belote.Domain;
 using static Belote.Domain.ContractUtils;
@@ -56,11 +58,16 @@ namespace Belote.Game
             });
         }
 
-        public static int CompareTo(this Card card, Card other, Contract contract)
+        public static int CompareTo(this Card card, Card other, Contract? contract)
         {
             if (card.Suit() != other.Suit())
                 return other.IsTrump(contract) && !card.IsTrump(contract) ? -1 : +1;
             return card.Power(contract).CompareTo(other.Power(contract));
+        }
+
+        public static Card StrongestCard(this IEnumerable<Card> cards, Contract? contract)
+        {
+            return cards.Max(Comparer<Card>.Create((a, b) => a.CompareTo(b, contract)));
         }
     }
 }
