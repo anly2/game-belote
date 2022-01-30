@@ -81,13 +81,14 @@ namespace Belote.Player.Human.Console
             Print($"Your turn to play : ({contract})  {trick.Text()}");
             Print("Cards: " + hand.Text());
 
-            PrintOptions(1, hand.Select(c => (c.Text(), c.CanBePlayed(contract, hand, trick))).ToArray());
+            var playableCards = hand.PlayableCards(contract, trick).ToList();
+            PrintOptions(1, playableCards.Select(c => (c.Text(), true)).ToArray());
 
             if (!int.TryParse(System.Console.ReadLine(), out var choice))
                 throw new ArgumentException("Invalid choice!");
             choice--;
 
-            return hand[choice];
+            return playableCards[choice];
         }
 
 
@@ -108,7 +109,7 @@ namespace Belote.Player.Human.Console
                 n++;
             }
 
-            sb.Append(')');
+            sb.Append(" )");
             System.Console.Out.WriteLine(sb.ToString());
         }
     }

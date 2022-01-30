@@ -7,11 +7,6 @@ namespace Belote.Game
 {
     public static class GameRules
     {
-        public static bool CanBePlayed(this Card card, Contract contract, IEnumerable<Card> handCards, IEnumerable<Card> trickCards)
-        {
-            return handCards.PlayableCards(contract, trickCards).Contains(card);
-        }
-
         public static IEnumerable<Card> PlayableCards(this IEnumerable<Card> handCards, Contract contract, IEnumerable<Card> trickCards)
         {
             // ReSharper disable PossibleMultipleEnumeration
