@@ -12,22 +12,28 @@ namespace Belote.Player.Human.Console
     public class ConsoleHumanPlayer : IPlayer
     {
         private IPlayerStateView? _state;
-        // ReSharper disable once InconsistentNaming
-        private readonly string? Name;
+        private readonly string? _name;
+        private readonly bool _printEvents;
 
-        public ConsoleHumanPlayer(string? name)
+        public ConsoleHumanPlayer(string? name, bool printEvents = false)
         {
-            Name = name;
+            _name = name;
+            _printEvents = printEvents;
         }
 
         public void BindStateView(IPlayerStateView playerStateView)
         {
             _state = playerStateView;
+
+            if (_printEvents)
+            {
+                _state.OnTrickEnd += t => System.Console.Out.WriteLine($"Player {t.winner+1} won a trick: {t.trickCards.Text()}");
+            }
         }
 
         protected void Print(string message)
         {
-            System.Console.Out.WriteLine("[Player " + (_state?.PlayerIndex + 1) + (Name??"")+ "] " + message);
+            System.Console.Out.WriteLine("[Player " + (_state?.PlayerIndex + 1) + (_name??"")+ "] " + message);
         }
 
 

@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -189,6 +188,7 @@ namespace Belote.Game
             }
 
             var winner = DecideTrickWinner();
+            _match.EndTrick(_match.TrickCards, _match.TrickInitiator!.Value, winner);
             _match.TrickCards.Move(playersCount, _match.WonCards[winner]);
             _match.TrickInitiator = winner;
         }
@@ -233,12 +233,12 @@ namespace Belote.Game
                 _state.Scores[i] += (byte) MatchScoreToGameScore(scores[i], _match.Contract!.Value);
         }
 
-        protected virtual int CountScore(IEnumerable<Card> pile, Contract contract) //TODO: include Declarations
+        public int CountScore(IEnumerable<Card> pile, Contract contract) //TODO: include Declarations
         {
             return pile.Sum(c => c.Value(contract));
         }
 
-        protected virtual int MatchScoreToGameScore(int matchScore, Contract contract)
+        public int MatchScoreToGameScore(int matchScore, Contract contract)
         {
             //TODO: implement special rounding
             return (int) Math.Round((double) matchScore / 10);

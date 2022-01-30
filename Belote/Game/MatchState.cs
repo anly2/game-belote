@@ -65,12 +65,19 @@ namespace Belote.Game
 
 
             public event Action<int, Contract>? OnBid;
+            public event Action<(IEnumerable<Card> trickCards, int initiator, int winner)>? OnTrickEnd;
+
 
             public void Bid(int playerIndex, Contract bid)
             {
                 CommittedPlayer = playerIndex;
                 Contract = bid;
                 OnBid?.Invoke(playerIndex, bid);
+            }
+
+            public void EndTrick(IEnumerable<Card> trickCards, int initiator, int winner)
+            {
+                OnTrickEnd?.Invoke((trickCards, initiator, winner));
             }
         }
     }

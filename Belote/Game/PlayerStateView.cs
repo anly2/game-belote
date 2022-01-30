@@ -43,6 +43,12 @@ namespace Belote.Game
                 add => GameState.Match.OnBid += value;
                 remove => GameState.Match.OnBid -= value;
             }
+
+            event Action<(IEnumerable<Card> trickCards, int initiator, int winner)>? IPlayerStateView.OnTrickEnd
+            {
+                add => GameState.Match.OnTrickEnd += value;
+                remove => GameState.Match.OnTrickEnd -= value;
+            }
         }
     }
 }
