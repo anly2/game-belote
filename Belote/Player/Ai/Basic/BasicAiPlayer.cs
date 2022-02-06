@@ -46,8 +46,9 @@ namespace Belote.Player.Ai.Basic
                 {
                     Print("recognized pattern: " + source);
                     var bid = contract ?? PlainContracts[found[0].Suit()];
-                    if (bid > _state.CurrentContract)
+                    if (!_state.CurrentContract.HasValue || bid > _state.CurrentContract.Value)
                         return bid;
+                    Print($"Not bidding {bid} as already on {_state.CurrentContract}");
                 }
             }
             Print("passing");

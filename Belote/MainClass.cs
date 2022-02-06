@@ -41,7 +41,7 @@ namespace Belote
             var game = new Game.Game(Game.Game.GetPlayingDeck(), players);
             game.State.Match!.OnBid += (t) =>
             {
-                Console.Out.WriteLine($"<{players[t.player]}> hand: {game.State.Match.PlayerCards[t.player].Text()}");
+                // Console.Out.WriteLine($"<{players[t.player]}> hand: {game.State.Match.PlayerCards[t.player].Text()}");
                 Console.Out.WriteLine($"<{players[t.player]}> " + (t.bid != null ? $"bid: {t.bid}" : "passed"));
             };
             game.State.Match!.OnCardPlayed += (t) => Console.Out.WriteLine($"<{players[t.player]}> played: {t.card.Text()}");
