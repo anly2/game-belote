@@ -89,7 +89,7 @@ public class GameRulesTests
     }
 
     [Fact]
-    public void PlayableCards_AllowsAnything_WhenCannotRaise()
+    public void PlayableCards_AllowsAnything_WhenCannotMeetSuit()
     {
         //Contract: AllTrumps
         //Trick:    8♦
@@ -102,5 +102,21 @@ public class GameRulesTests
 
         AssertThat(hand.PlayableCards(contract, trick))
             .ContainsExactly(Spades_7, Spades_Q, Spades_10, Hearts_7, Hearts_K, Hearts_10, Hearts_J, Clubs_9);
+    }
+
+    [Fact]
+    public void PlayableCards_AllowsAnyTrump_WhenCannotRaise()
+    {
+        //Contract: Hearts
+        //Trick:    J♥
+        //Hand:     K♦, K♥, 10♥, 8♠, Q♠
+        //expected: x , ✓ ,  ✓  , x , x
+
+        var contract = Contract.Hearts;
+        var trick = new[] {Hearts_J};
+        var hand = new[] {Diamonds_K, Hearts_K, Hearts_10, Spades_8, Spades_Q};
+
+        AssertThat(hand.PlayableCards(contract, trick))
+            .ContainsExactly(Hearts_K, Hearts_10);
     }
 }

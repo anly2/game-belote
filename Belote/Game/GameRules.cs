@@ -24,7 +24,8 @@ namespace Belote.Game
 
                 // If playing a trump suit, a stronger card must be played, if available
                 var strongest = trickCards.StrongestCard(contract);
-                return sameSuitCards.Where(c => strongest.CompareTo(c, contract) < 0);
+                var stronger = sameSuitCards.Where(c => strongest.CompareTo(c, contract) < 0);
+                return stronger.Any() ? stronger : sameSuitCards;
             }
 
             // If the asked suit cannot be answered, and the current winner is not a teammate, a trump must be played, if available
