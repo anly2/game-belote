@@ -4,7 +4,9 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text.RegularExpressions;
 using Belote.Domain;
+using Belote.Game;
 using Belote.Game.State;
+using CommonUtils;
 using static Belote.Domain.ContractUtils;
 using static Belote.Player.Ai.GameUtils;
 
@@ -39,17 +41,41 @@ namespace Belote.Player.Ai.Basic
                 var found = _state!.CurrentHand.FindMatchingCards(pattern);
                 if (found?.Any() ?? false)
                 {
-                    Console.Out.WriteLine("Recognized pattern: " + source);
+                    Print("recognized pattern: " + source);
+                    Console.Out.WriteLine("");
                     return contract ?? PlainContracts[found[0].Suit()];
                 }
             }
             Print("passing");
+            Console.Out.WriteLine("");
             return null;
         }
 
         public override Card Play(List<Declaration> declarations)
         {
-            throw new NotImplementedException();
+            var played = DoPlay(declarations);
+            Print(_state!.CurrentHand.Text());
+            Print("playing: " + played.Text());
+            Console.Out.WriteLine("");
+            return played;
+        }
+
+        private Card DoPlay(List<Declaration> declarations)
+        {
+            if (IsTrickInitiator())
+            {
+                var cards = new List<Card>(_state!.CurrentHand);
+                cards.Sort((a, b) => a.CompareTo(b, _state.CurrentContract));
+
+                return _state.CurrentTrickCount < 4 ? cards.First() : cards.Last();
+            }
+
+            return _state!.CurrentHand.PlayableCards(_state.CurrentContract!.Value, _state.CurrentTrick).Random();
+        }
+
+        private bool IsTrickInitiator()
+        {
+            return _state!.CurrentTrickInitiator == _state!.PlayerIndex;
         }
     }
 }

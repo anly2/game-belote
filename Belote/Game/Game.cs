@@ -98,7 +98,10 @@ namespace Belote.Game
             _match.TrickInitiator = _state.NextPlayer(_match.Dealer);
             // Assume all players have the same number of cards
             while (_match.PlayerCards[0].Count > 0)
+            {
                 PlayTrick();
+                _match.TrickCount++;
+            }
 
             // Match scoring phase
             DoScoring();

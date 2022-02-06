@@ -11,6 +11,7 @@ namespace Belote.Game.State
         public IReadOnlyList<Card> CurrentHand { get; }
         public IReadOnlyList<Card> CurrentTrick { get; }
         public int? CurrentTrickInitiator { get; }
+        public int CurrentTrickCount { get; }
         public int CurrentMatchDealer { get; }
         public Contract? CurrentContract { get; }
         public bool IsCommittedToCurrentContract { get; }

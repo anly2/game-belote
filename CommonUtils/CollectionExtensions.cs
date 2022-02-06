@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Linq;
 
 namespace CommonUtils
 {
@@ -17,6 +18,12 @@ namespace CommonUtils
                 var k = rng.Next(n + 1);
                 (list[k], list[n]) = (list[n], list[k]);
             }
+        }
+
+        public static T Random<T>(this IEnumerable<T> items)
+        {
+            var all = items.ToList();
+            return all[rng.Next(all.Count)];
         }
         
         

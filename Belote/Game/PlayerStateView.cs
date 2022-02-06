@@ -28,6 +28,8 @@ namespace Belote.Game
 
             int? IPlayerStateView.CurrentTrickInitiator => GameState.Match.TrickInitiator;
 
+            int IPlayerStateView.CurrentTrickCount => GameState.Match.TrickCount;
+
             int IPlayerStateView.CurrentMatchDealer => GameState.Match.Dealer;
 
             Contract? IPlayerStateView.CurrentContract => GameState.Match.Contract;

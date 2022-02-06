@@ -12,6 +12,7 @@ namespace Belote.Game.State
         public int? CommittedPlayer { get; }
         public IReadOnlyList<Declaration> Declarations { get; }
         public int? TrickInitiator { get; }
+        public int TrickCount { get; }
         public IReadOnlyList<Card> TrickCards { get; }
         public IReadOnlyList<IReadOnlyList<Card>> WonCards { get; }
 

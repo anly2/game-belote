@@ -39,6 +39,7 @@ namespace Belote.Game
                 Contract = null;
                 CommittedPlayer = null;
                 TrickInitiator = null;
+                TrickCount = 0;
                 return this;
             }
 
@@ -56,6 +57,8 @@ namespace Belote.Game
             IReadOnlyList<Declaration> IMatchState.Declarations => new ReadOnlyCollection<Declaration>(Declarations);
 
             public int? TrickInitiator { get; set; }
+
+            public int TrickCount { get; set; }
 
             public IList<Card> TrickCards { get; }
             IReadOnlyList<Card> IMatchState.TrickCards => new ReadOnlyCollection<Card>(TrickCards);
