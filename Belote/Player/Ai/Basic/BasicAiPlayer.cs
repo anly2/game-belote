@@ -29,7 +29,7 @@ namespace Belote.Player.Ai.Basic
         {
             foreach (var pattern in BidPatterns)
             {
-                var found = _state!.CurrentHand.MatchRanks(pattern);
+                var found = _state!.CurrentHand.FindMatchingCards(pattern);
                 if (found != null)
                     return PlainContracts[found[0].Suit()];
             }

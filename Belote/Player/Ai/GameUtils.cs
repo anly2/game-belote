@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.RegularExpressions;
 using Belote.Domain;
 
 namespace Belote.Player.Ai
@@ -9,43 +10,52 @@ namespace Belote.Player.Ai
     {
         public static List<Card>? MatchRanks(this IEnumerable<Card> hand, IEnumerable<Card> targets, int[]? suitMapping = null)
         {
-            return hand.MatchRanks(targets.Select(c => new CardSelector(c)), suitMapping);
+            return hand.FindMatchingCards(targets.Select(c => new CardSelector(c)), suitMapping);
         }
 
-        public static List<Card>? MatchRanks(this IEnumerable<Card> hand, IEnumerable<CardSelector> targets, int[]? suitMapping = null)
+        //ASSUMING the '2' cards are not actually used in the game, use them as a token to represent 'empty' so Rank==0
+        private static readonly Card[] EmptyTokensPerSuit = {Card.Clubs_2, Card.Diamonds_2, Card.Hearts_2, Card.Spades_2};
+        public static List<Card>? FindMatchingCards(this IEnumerable<Card> hand, IEnumerable<CardSelector> targets, int[]? suitMapping = null)
         {
-            var suits = suitMapping ?? new[] {-1, -1, -1, -1};
+            //init suit mapping
+            var suitRemapping = suitMapping ?? new[] {-1, -1, -1, -1};
 
-            // ReSharper disable PossibleMultipleEnumeration
+            //split by suit
+            var bySuit = new List<Card>[4];
+            for (var i = 0; i < bySuit.Length; i++)
+                bySuit[i] = new List<Card>();
+            foreach (var grouping in hand.GroupBy(card => card.Suit()))
+                bySuit[grouping.Key].AddRange(grouping);
+
+            //add "empty" tokens
+            for (var suit = 0; suit < bySuit.Length; suit++)
+            {
+                if (bySuit[suit].Count == 0)
+                    bySuit[suit].Add(EmptyTokensPerSuit[suit]);
+                else
+                    //guessing: sort in desc, since patterns are likely to target the strongest cards first (and hands are already in asc order)
+                    bySuit[suit].Reverse();
+            }
+
+
             var result = new List<Card>(targets.Count());
             foreach (var selector in targets)
             {
-                var found = hand.FindCard(selector, suits);
+                var haystack = selector.Suit == -1 ? bySuit.SelectMany(g => g) :
+                    suitRemapping[selector.Suit] == -1 ? suitRemapping.Where(s => s == -1).SelectMany((_,i) => bySuit[i]) :
+                    bySuit[suitRemapping[selector.Suit]];
+
+                //FIXME: this does not work when backtracking is required (pattern: J 9, hand: J♣, 9♥, J♥, A♥  --> wrongly goes for ♣
+                Card? found = haystack.FirstOrDefault(c => selector.Predicate(c.Rank(), c.Suit(), suitRemapping));
                 if (found == null) return null;
-                if (selector.Suit >= 0) suits[selector.Suit] = found.Value.Suit();
                 result.Add(found.Value);
+                var suit = found.Value.Suit();
+                bySuit[suit].Remove(found.Value);
+                if (selector.Suit >= 0) suitRemapping[selector.Suit] = suit;
             }
 
             return result;
         }
-
-
-        public static Card? FindCard(this IEnumerable<Card> hand, Card target, int[] suitRemapping)
-        {
-            return hand.FindCard(CardSelector.CreatePredicate(target.Rank(), target.Suit()), suitRemapping);
-        }
-
-        public static Card? FindCard(this IEnumerable<Card> hand, CardSelector selector, int[] suitRemapping)
-        {
-            return hand.FindCard(selector.Predicate, suitRemapping);
-        }
-
-        public static Card? FindCard(this IEnumerable<Card> hand, Func<int, int, int[], bool> selector, int[] suitRemapping)
-        {
-            return hand.FirstOrDefault(c => selector(c.Rank(), c.Suit(), suitRemapping));
-        }
-
-
 
 
         public class CardSelector
@@ -69,6 +79,51 @@ namespace Belote.Player.Ai
                     (targetRank < 0 || rank == targetRank)
                     && (targetSuit < 0 || suitRemapping[targetSuit] < 0 || suit == suitRemapping[targetSuit]);
             }
+        }
+
+
+        public static IEnumerable<CardSelector> ToCardsPattern(this string expression)
+        {
+            return expression.Split(",", StringSplitOptions.TrimEntries)
+                .SelectMany(ParseSingleSuitCardsPattern);
+        }
+
+        private static readonly Regex CardPatternExpression = new Regex(
+            "(?:(?<wildcard>\\*)|(?<operator><|<=|>|>=)?(?<rank>[AKQJ]|\\d+))(?<optional>\\?)?"
+            , RegexOptions.Compiled);
+        private static IEnumerable<CardSelector> ParseSingleSuitCardsPattern(string expression, int suit)
+        {
+            return CardPatternExpression.Matches(expression).Select(match =>
+            {
+                Func<int, bool> predicate;
+                if (match.Groups["wildcard"].Success)
+                {
+                    if (match.Groups["optional"].Success)
+                        predicate = rank => true;
+                    else
+                        predicate = rank => rank > 0;
+                }
+                else
+                {
+                    var targetRank = Enum.Parse<Card>("Clubs_" + match.Groups["rank"].Value.ToUpper()).Rank();
+                    predicate = match.Groups["operator"].Value switch
+                    {
+                        "<=" => rank => rank <= targetRank && rank > 0,
+                        "<" => rank => rank < targetRank && rank > 0,
+                        ">=" => rank => rank >= targetRank,
+                        ">" => rank => rank > targetRank,
+                        _ => rank => rank == targetRank
+                    };
+
+                    if (match.Groups["optional"].Success)
+                    {
+                        var org = predicate;
+                        predicate = rank => rank == 0 || org(rank);
+                    }
+                }
+
+                return new CardSelector((rank, _, __) => predicate(rank), suit);
+            });
         }
     }
 }
