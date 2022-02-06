@@ -11,17 +11,39 @@ namespace Belote
     {
         public static void Main(string[] args)
         {
+            // PlayWithBots();
+            LetBotsPlay();
+        }
+
+        public static void PlayWithBots()
+        {
             var players = new List<IPlayer>(new IPlayer[]{
                 new ConsoleHumanPlayer(),
                 new BasicAiPlayer(),
                 new BasicAiPlayer(),
                 new BasicAiPlayer()
-                // new ConsoleHumanPlayer(),
-                // new ConsoleHumanPlayer(),
-                // new ConsoleHumanPlayer()
             });
             var game = new Game.Game(Game.Game.GetPlayingDeck(), players);
             game.State.Match!.OnBid += (t) => Console.Out.WriteLine($"<{players[t.player]}> " + (t.bid != null ? $"bid: {t.bid}" : "passed"));
+            game.State.Match!.OnCardPlayed += (t) => Console.Out.WriteLine($"<{players[t.player]}> played: {t.card.Text()}");
+            game.State.Match!.OnTrickEnd += t => Console.Out.WriteLine($"<{players[t.winner]}> won a trick: {t.trickCards.Text()}");
+            game.PlayGame();
+        }
+
+        public static void LetBotsPlay()
+        {
+            var players = new List<IPlayer>(new IPlayer[]{
+                new BasicAiPlayer(),
+                new BasicAiPlayer(),
+                new BasicAiPlayer(),
+                new BasicAiPlayer()
+            });
+            var game = new Game.Game(Game.Game.GetPlayingDeck(), players);
+            game.State.Match!.OnBid += (t) =>
+            {
+                Console.Out.WriteLine($"<{players[t.player]}> hand: {game.State.Match.PlayerCards[t.player].Text()}");
+                Console.Out.WriteLine($"<{players[t.player]}> " + (t.bid != null ? $"bid: {t.bid}" : "passed"));
+            };
             game.State.Match!.OnCardPlayed += (t) => Console.Out.WriteLine($"<{players[t.player]}> played: {t.card.Text()}");
             game.State.Match!.OnTrickEnd += t => Console.Out.WriteLine($"<{players[t.winner]}> won a trick: {t.trickCards.Text()}");
             game.PlayGame();
