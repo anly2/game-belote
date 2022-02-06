@@ -72,7 +72,9 @@ namespace Belote.Player.Ai.Basic
                 return _state.CurrentTrickCount < 4 ? cards.First() : cards.Last();
             }
 
-            return _state!.CurrentHand.PlayableCards(_state.CurrentContract!.Value, _state.CurrentTrick).Random();
+            var playableCards = new List<Card>(_state!.CurrentHand.PlayableCards(_state.CurrentContract!.Value, _state.CurrentTrick));
+            playableCards.Sort((a, b) => a.CompareTo(b, _state.CurrentContract));
+            return playableCards.First();
         }
 
         private bool IsTrickInitiator()
