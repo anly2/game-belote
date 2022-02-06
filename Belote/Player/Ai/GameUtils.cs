@@ -12,7 +12,7 @@ namespace Belote.Player.Ai
     public static class GameUtils
     {
         private const char TextualRankStart = 'a';
-        public static List<Card> FindMatchingCards(this IEnumerable<Card> hand, IEnumerable<Regex> patterns)
+        public static List<Card>? FindMatchingCards(this IEnumerable<Card> hand, IEnumerable<Regex> patterns)
         {
             var bySuit = new string?[4];
             for (var i = 0; i < bySuit.Length; i++)
@@ -28,6 +28,7 @@ namespace Belote.Player.Ai
             var result = new List<Card>();
             foreach (var pattern in patterns)
             {
+                bool matched = false;
                 for (var i = 0; i < bySuit.Length; i++)
                 {
                     if (bySuit[i] == null) continue;
@@ -35,7 +36,11 @@ namespace Belote.Player.Ai
                     if (!match.Success) continue;
                     result.AddRange(match.Groups.Values.Skip(1).Select(m => GetCard(m.Value[0] - TextualRankStart, i)));
                     bySuit[i] = null;
+                    matched = true;
+                    break;
                 }
+
+                if (!matched) return null;
             }
 
             return result;

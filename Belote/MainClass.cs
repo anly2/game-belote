@@ -13,13 +13,14 @@ namespace Belote
         {
             var players = new List<IPlayer>(new IPlayer[]{
                 new ConsoleHumanPlayer(null, true),
-                new ConsoleHumanPlayer(),
-                new ConsoleHumanPlayer(),
-                new ConsoleHumanPlayer()
-                // new BasicAiPlayer(),
-                // new BasicAiPlayer(),
-                // new BasicAiPlayer()
+                new BasicAiPlayer(),
+                new BasicAiPlayer(),
+                new BasicAiPlayer()
+                // new ConsoleHumanPlayer(),
+                // new ConsoleHumanPlayer(),
+                // new ConsoleHumanPlayer()
             });
+                // new BasicAiPlayer()
             new Game.Game(Game.Game.GetPlayingDeck(), players).PlayGame();
         }
     }
