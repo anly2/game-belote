@@ -27,6 +27,8 @@ namespace Belote
             game.State.Match!.OnBid += t => Console.Out.WriteLine($"<{players[t.player]}> " + (t.bid != null ? $"bid: {t.bid}" : "passed"));
             game.State.Match!.OnCardPlayed += t => Console.Out.WriteLine($"<{players[t.player]}> played: {t.card.Text()}");
             game.State.Match!.OnTrickEnd += t => Console.Out.WriteLine($"<{players[t.winner]}> won a trick: {t.trickCards.Text()}");
+            game.State.OnMatchEnd += s => Console.Out.WriteLine("Match ended. Score: " + String.Join(", ", s.Scores));
+            game.State.OnGameEnd += s => Console.Out.WriteLine("Game ended. Score: " + String.Join(", ", s.Scores));
             game.PlayGame();
         }
 
@@ -44,8 +46,10 @@ namespace Belote
                 // Console.Out.WriteLine($"<{players[t.player]}> hand: {game.State.Match.PlayerCards[t.player].Text()}");
                 Console.Out.WriteLine($"<{players[t.player]}> " + (t.bid != null ? $"bid: {t.bid}" : "passed"));
             };
-            game.State.Match!.OnCardPlayed += t => Console.Out.WriteLine($"<{players[t.player]}> played: {t.card.Text()}");
+            // game.State.Match!.OnCardPlayed += t => Console.Out.WriteLine($"<{players[t.player]}> played: {t.card.Text()}");
             game.State.Match!.OnTrickEnd += t => Console.Out.WriteLine($"<{players[t.winner]}> won a trick: {t.trickCards.Text()}");
+            game.State.OnMatchEnd += s => Console.Out.WriteLine("Match ended. Score: " + String.Join(", ", s.Scores));
+            game.State.OnGameEnd += s => Console.Out.WriteLine("Game ended. Score: " + String.Join(", ", s.Scores));
             game.PlayGame();
         }
     }

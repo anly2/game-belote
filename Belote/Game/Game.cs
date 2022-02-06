@@ -65,8 +65,9 @@ namespace Belote.Game
             {
                 PlayMatch();
                 //TODO: use events
-                Console.Out.WriteLine("Match ended. Score: " + Join(", ", _state.Scores));
+                _state.EndMatch();
             }
+            _state.EndGame();
         }
 
         protected virtual void ShuffleBeforeGame()

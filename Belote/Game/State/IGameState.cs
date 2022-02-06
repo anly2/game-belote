@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Belote.Domain;
 using Belote.Player;
 
@@ -12,5 +13,8 @@ namespace Belote.Game.State
         public IReadOnlyList<byte> PlayerTeams { get; }
         
         public IMatchState? Match { get; }
+
+        public event Action<IGameState>? OnMatchEnd;
+        public event Action<IGameState>? OnGameEnd;
     }
 }

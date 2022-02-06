@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Belote.Domain;
 using Belote.Game.State;
@@ -35,6 +36,14 @@ namespace Belote.Game
 
             public MatchState Match { get; set; }
             IMatchState IGameState.Match => Match;
+
+
+            public event Action<IGameState>? OnMatchEnd;
+            public event Action<IGameState>? OnGameEnd;
+
+
+            public void EndMatch() => OnMatchEnd?.Invoke(this);
+            public void EndGame() => OnGameEnd?.Invoke(this);
         }
     }
 }
