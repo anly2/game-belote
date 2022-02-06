@@ -10,13 +10,24 @@ namespace Belote.Tests.Player.Ai;
 public class GameUtilsTest
 {
     [Fact]
-    public void RecognizesCardPatterns()
+    public void RecognizesCardPatterns_AllPresent()
     {
-        //8♣, J♣, 9♥, J♥, A♥
+        //8♣, J♣, A♥, 9♥, J♥
         IEnumerable<Card> cards = new[] { Clubs_8, Clubs_J, Hearts_9, Hearts_J, Hearts_A };
 
         var pattern = "J 9 A".ToCardsPattern();
 
         AssertThat(cards.FindMatchingCards(pattern)).ContainsExactly(Hearts_J, Hearts_9, Hearts_A);
+    }
+
+    [Fact]
+    public void RecognizesCardPatterns_SomePresent()
+    {
+        //8♣, J♣, A♥, 9♥, J♥
+        IEnumerable<Card> cards = new[] { Clubs_8, Clubs_J, Hearts_9, Hearts_J, Hearts_A };
+
+        var pattern = "J A".ToCardsPattern();
+
+        AssertThat(cards.FindMatchingCards(pattern)).ContainsExactly(Hearts_J, Hearts_A);
     }
 }

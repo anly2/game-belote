@@ -56,7 +56,7 @@ namespace Belote.Player.Ai
 
         private static Regex ParseSingleSuitCardsPattern(string expression)
         {
-            return new Regex(String.Join("", CardPatternExpression.Matches(expression).Select(match =>
+            return new Regex(String.Join(".*", CardPatternExpression.Matches(expression).Select(match =>
             {
                 IEnumerable<int> targetRanks;
                 if (match.Groups["wildcard"].Success)
@@ -77,9 +77,11 @@ namespace Belote.Player.Ai
                 }
 
                 var res = "[" + String.Join("", targetRanks.Select(r => (char) (TextualRankStart + r))) + "]";
+
                 if (match.Groups["optional"].Success)
                     res += (res.Length == 0 ? "" : "|") + "^$";
-                return "("+res+")";
+
+                return "(" + res + ")";
             })), RegexOptions.Compiled);
         }
     }

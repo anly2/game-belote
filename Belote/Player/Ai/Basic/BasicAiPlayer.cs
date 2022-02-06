@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.RegularExpressions;
 using Belote.Domain;
 using Belote.Game.State;
 using static Belote.Domain.ContractUtils;
@@ -10,11 +11,11 @@ namespace Belote.Player.Ai.Basic
 {
     public class BasicAiPlayer : NamedPlayer
     {
-        private static readonly IReadOnlyList<IReadOnlyList<CardSelector>> BidPatterns = new[]
+        private static readonly IReadOnlyList<IReadOnlyList<Regex>> BidPatterns = new[]
         {
-            new [] {Card.Spades_J, Card.Spades_9},
-            new [] {Card.Spades_J, Card.Diamonds_A, Card.Hearts_A}
-        }.Select(cards => cards.Select(c => new CardSelector(c)).ToList().AsReadOnly()).ToList().AsReadOnly();
+            "J 9",
+            "J, A, A"
+        }.Select(pattern => pattern.ToCardsPattern().ToList().AsReadOnly()).ToList().AsReadOnly();
 
 
         private IPlayerStateView? _state;
@@ -30,7 +31,7 @@ namespace Belote.Player.Ai.Basic
             foreach (var pattern in BidPatterns)
             {
                 var found = _state!.CurrentHand.FindMatchingCards(pattern);
-                if (found != null)
+                if (found.Any())
                     return PlainContracts[found[0].Suit()];
             }
             return null;
