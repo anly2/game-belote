@@ -64,14 +64,26 @@ namespace Belote.Domain
     
     public static class CardUtils
     {
+        private const int CardsPerSuit = 13;
+
         public static int Suit(this Card card)
         {
-            return (int) card / 13;
+            return (int) card / CardsPerSuit;
         }
         
         public static int Rank(this Card card)
         {
-            return (int) card % 13;
+            return (int) card % CardsPerSuit;
+        }
+
+        public static Card GetCard(int rank, int suit)
+        {
+            return (Card) (suit * CardsPerSuit + rank);
+        }
+
+        public static IEnumerable<int> GetAllCardRanks()
+        {
+            return Enumerable.Range(0, CardsPerSuit);
         }
 
         private static readonly string[] CardSuitTexts = {"♣", "♦", "♥", "♠"};
