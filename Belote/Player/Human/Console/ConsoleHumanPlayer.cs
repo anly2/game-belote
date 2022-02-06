@@ -81,6 +81,12 @@ namespace Belote.Player.Human.Console
             var playableCards = hand.PlayableCards(contract, trick).ToList();
             PrintOptions(1, playableCards.Select(c => (c.Text(), true)).ToArray());
 
+            if (playableCards.Count == 1)
+            {
+                System.Console.ReadLine(); //anything
+                return playableCards[0];
+            }
+
             if (!int.TryParse(System.Console.ReadLine(), out var choice))
                 throw new ArgumentException("Invalid choice!");
             choice--;
