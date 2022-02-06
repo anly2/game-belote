@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.Linq;
 using System.Text.RegularExpressions;
 using Belote.Domain;
@@ -33,6 +34,8 @@ namespace Belote.Player.Ai.Basic
             _state = playerStateView;
         }
 
+        protected override void Print(string message) => Debug.WriteLine("[" + Name + "] " + message);
+
         public override Contract? Bid()
         {
             Print(_state!.CurrentHand.Text());
@@ -42,12 +45,12 @@ namespace Belote.Player.Ai.Basic
                 if (found?.Any() ?? false)
                 {
                     Print("recognized pattern: " + source);
-                    Console.Out.WriteLine("");
-                    return contract ?? PlainContracts[found[0].Suit()];
+                    var bid = contract ?? PlainContracts[found[0].Suit()];
+                    if (bid > _state.CurrentContract)
+                        return bid;
                 }
             }
             Print("passing");
-            Console.Out.WriteLine("");
             return null;
         }
 
@@ -56,7 +59,6 @@ namespace Belote.Player.Ai.Basic
             var played = DoPlay(declarations);
             Print(_state!.CurrentHand.Text());
             Print("playing: " + played.Text());
-            Console.Out.WriteLine("");
             return played;
         }
 

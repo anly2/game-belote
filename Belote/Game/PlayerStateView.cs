@@ -40,7 +40,7 @@ namespace Belote.Game
 
             // Delegate events //
 
-            event Action<int, Contract>? IPlayerStateView.OnBid
+            event Action<(int player, Contract? bid)>? IPlayerStateView.OnBid
             {
                 add => GameState.Match.OnBid += value;
                 remove => GameState.Match.OnBid -= value;

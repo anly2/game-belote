@@ -17,7 +17,7 @@ namespace Belote.Game.State
         public bool IsCommittedToCurrentContract { get; }
 
 
-        event Action<int, Contract> OnBid;
+        event Action<(int player, Contract? bid)> OnBid;
         event Action<(IEnumerable<Card> trickCards, int initiator, int winner)>? OnTrickEnd;
 
         //event OnPlayedCard

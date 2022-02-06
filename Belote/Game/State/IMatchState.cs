@@ -17,7 +17,8 @@ namespace Belote.Game.State
         public IReadOnlyList<IReadOnlyList<Card>> WonCards { get; }
 
 
-        public event Action<int, Contract> OnBid;
+        public event Action<(int player, Contract? bid)> OnBid;
+        public event Action<(int player, Card card)>? OnCardPlayed;
         public event Action<(IEnumerable<Card> trickCards, int initiator, int winner)>? OnTrickEnd;
     }
 }

@@ -67,15 +67,24 @@ namespace Belote.Game
             IReadOnlyList<IReadOnlyList<Card>> IMatchState.WonCards => WonCards.Select(s => new ReadOnlyCollection<Card>(s)).ToList().AsReadOnly();
 
 
-            public event Action<int, Contract>? OnBid;
+            public event Action<(int player, Contract? bid)>? OnBid;
+            public event Action<(int player, Card card)>? OnCardPlayed;
             public event Action<(IEnumerable<Card> trickCards, int initiator, int winner)>? OnTrickEnd;
 
 
-            public void Bid(int playerIndex, Contract bid)
+            public void Bid(int playerIndex, Contract? bid)
             {
-                CommittedPlayer = playerIndex;
-                Contract = bid;
-                OnBid?.Invoke(playerIndex, bid);
+                if (bid.HasValue)
+                {
+                    CommittedPlayer = playerIndex;
+                    Contract = bid;
+                }
+                OnBid?.Invoke((playerIndex, bid));
+            }
+
+            public void PlayCard(int player, Card card)
+            {
+                OnCardPlayed?.Invoke((player, card));
             }
 
             public void EndTrick(IEnumerable<Card> trickCards, int initiator, int winner)

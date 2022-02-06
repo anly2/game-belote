@@ -20,10 +20,10 @@ namespace Belote
                 // new ConsoleHumanPlayer(),
                 // new ConsoleHumanPlayer()
             });
-                // new BasicAiPlayer()
             var game = new Game.Game(Game.Game.GetPlayingDeck(), players);
-            game.State.Match!.OnBid += (i, contract) => Console.Out.WriteLine($"Player <{players[i]}> bid: {contract}");
-            game.State.Match!.OnTrickEnd += t => Console.Out.WriteLine($"Player <{players[t.winner]}> won a trick: {t.trickCards.Text()}");
+            game.State.Match!.OnBid += (t) => Console.Out.WriteLine($"<{players[t.player]}> " + (t.bid != null ? $"bid: {t.bid}" : "passed"));
+            game.State.Match!.OnCardPlayed += (t) => Console.Out.WriteLine($"<{players[t.player]}> played: {t.card.Text()}");
+            game.State.Match!.OnTrickEnd += t => Console.Out.WriteLine($"<{players[t.winner]}> won a trick: {t.trickCards.Text()}");
             game.PlayGame();
         }
     }

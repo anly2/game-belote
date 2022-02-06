@@ -21,7 +21,7 @@ namespace Belote.Player
 
 
 
-        protected void Print(string message) => System.Console.Out.WriteLine("[" + Name + "] " + message);
+        protected virtual void Print(string message) => System.Console.Out.WriteLine("[" + Name + "] " + message);
 
         public override string? ToString() => Name ?? base.ToString();
     }

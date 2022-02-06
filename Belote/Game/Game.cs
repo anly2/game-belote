@@ -151,6 +151,7 @@ namespace Belote.Game
                 if (bid == null)
                 {
                     passes++;
+                    _match.Bid(playerIndex, bid);
                     continue;
                 }
                 passes = 0;
@@ -166,7 +167,7 @@ namespace Belote.Game
                         $"Player {playerIndex} cannot double the bid of their teammate (player {_match.CommittedPlayer})!");
 
                 currentBid = bid;
-                _match.Bid(playerIndex, bid.Value);
+                _match.Bid(playerIndex, bid);
             }
 
             return currentBid != null;
@@ -189,6 +190,7 @@ namespace Belote.Game
                 );
 
                 _match.PlayerCards[playerIndex].Move(played, _match.TrickCards);
+                _match.PlayCard(playerIndex, played);
             }
 
             var winner = DecideTrickWinner();
