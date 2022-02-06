@@ -12,10 +12,10 @@ namespace Belote
         public static void Main(string[] args)
         {
             var players = new List<IPlayer>(new IPlayer[]{
-                new ConsoleHumanPlayer("A", true),
-                new ConsoleHumanPlayer("B"),
-                new ConsoleHumanPlayer("A"),
-                new ConsoleHumanPlayer("B")
+                new ConsoleHumanPlayer(null, true),
+                new ConsoleHumanPlayer(),
+                new ConsoleHumanPlayer(),
+                new ConsoleHumanPlayer()
                 // new BasicAiPlayer(),
                 // new BasicAiPlayer(),
                 // new BasicAiPlayer()

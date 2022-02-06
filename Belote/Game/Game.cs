@@ -180,9 +180,10 @@ namespace Belote.Game
 
                 var played = player.Play(null);
 
-                Debug.Assert(_match.PlayerCards[playerIndex].Contains(played),
-                    $"Player {playerIndex} tried to play card {played.Text()} which is not in their hand!");
-                //Preferably check other rules, but in a real human game there is no Game Master that enforces those...
+                Debug.Assert(
+                    _match.PlayerCards[playerIndex].PlayableCards(_match.Contract!.Value, _match.TrickCards).Contains(played),
+                    $"Player '{player}' tried to play card {played.Text()} which is not allowed at this time!"
+                );
 
                 _match.PlayerCards[playerIndex].Move(played, _match.TrickCards);
             }

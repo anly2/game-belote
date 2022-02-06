@@ -8,7 +8,7 @@ using static Belote.Player.Ai.GameUtils;
 
 namespace Belote.Player.Ai.Basic
 {
-    public class BasicAiPlayer : IPlayer
+    public class BasicAiPlayer : NamedPlayer
     {
         private static readonly IReadOnlyList<IReadOnlyList<CardSelector>> BidPatterns = new[]
         {
@@ -17,26 +17,26 @@ namespace Belote.Player.Ai.Basic
         }.Select(cards => cards.Select(c => new CardSelector(c)).ToList().AsReadOnly()).ToList().AsReadOnly();
 
 
-        // ReSharper disable once InconsistentNaming
-        private IPlayerStateView? State;
+        private IPlayerStateView? _state;
 
-        public void BindStateView(IPlayerStateView playerStateView)
+        public override void BindStateView(IPlayerStateView playerStateView)
         {
-            State = playerStateView;
+            base.BindStateView(playerStateView);
+            _state = playerStateView;
         }
 
-        public Contract? Bid()
+        public override Contract? Bid()
         {
             foreach (var pattern in BidPatterns)
             {
-                var found = State!.CurrentHand.MatchRanks(pattern);
+                var found = _state!.CurrentHand.MatchRanks(pattern);
                 if (found != null)
                     return PlainContracts[found[0].Suit()];
             }
             return null;
         }
 
-        public Card Play(List<Declaration> declarations)
+        public override Card Play(List<Declaration> declarations)
         {
             throw new NotImplementedException();
         }

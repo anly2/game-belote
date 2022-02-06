@@ -9,35 +9,32 @@ using static Belote.Domain.ContractUtils;
 
 namespace Belote.Player.Human.Console
 {
-    public class ConsoleHumanPlayer : IPlayer
+    public class ConsoleHumanPlayer : NamedPlayer
     {
         private IPlayerStateView? _state;
-        private readonly string? _name;
         private readonly bool _printEvents;
 
-        public ConsoleHumanPlayer(string? name, bool printEvents = false)
+        public ConsoleHumanPlayer(string? name = null, bool printEvents = false)
         {
-            _name = name;
+            Name = name;
             _printEvents = printEvents;
         }
 
-        public void BindStateView(IPlayerStateView playerStateView)
+        public override void BindStateView(IPlayerStateView playerStateView)
         {
+            base.BindStateView(playerStateView);
+
             _state = playerStateView;
 
             if (_printEvents)
             {
+                _state.OnBid += (i, contract) => System.Console.Out.WriteLine($"Player {i+1} bid: {contract}");
                 _state.OnTrickEnd += t => System.Console.Out.WriteLine($"Player {t.winner+1} won a trick: {t.trickCards.Text()}");
             }
         }
 
-        protected void Print(string message)
-        {
-            System.Console.Out.WriteLine("[Player " + (_state?.PlayerIndex + 1) + (_name??"")+ "] " + message);
-        }
 
-
-        public Contract? Bid()
+        public override Contract? Bid()
         {
             Print("Your turn to bid:");
             Print("Cards: " + _state!.CurrentHand.Text());
@@ -72,7 +69,7 @@ namespace Belote.Player.Human.Console
             PrintOptions(options.ToArray());
         }
 
-        public Card Play(List<Declaration> declarations)
+        public override Card Play(List<Declaration> declarations)
         {
             var contract = _state!.CurrentContract!.Value;
             var hand = _state!.CurrentHand;
