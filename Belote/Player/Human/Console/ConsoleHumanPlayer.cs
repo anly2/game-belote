@@ -12,12 +12,10 @@ namespace Belote.Player.Human.Console
     public class ConsoleHumanPlayer : NamedPlayer
     {
         private IPlayerStateView? _state;
-        private readonly bool _printEvents;
 
-        public ConsoleHumanPlayer(string? name = null, bool printEvents = false)
+        public ConsoleHumanPlayer(string? name = null)
         {
             Name = name;
-            _printEvents = printEvents;
         }
 
         public override void BindStateView(IPlayerStateView playerStateView)
@@ -25,12 +23,6 @@ namespace Belote.Player.Human.Console
             base.BindStateView(playerStateView);
 
             _state = playerStateView;
-
-            if (_printEvents)
-            {
-                _state.OnBid += (i, contract) => System.Console.Out.WriteLine($"Player {i+1} bid: {contract}");
-                _state.OnTrickEnd += t => System.Console.Out.WriteLine($"Player {t.winner+1} won a trick: {t.trickCards.Text()}");
-            }
         }
 
 

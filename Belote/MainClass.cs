@@ -12,7 +12,7 @@ namespace Belote
         public static void Main(string[] args)
         {
             var players = new List<IPlayer>(new IPlayer[]{
-                new ConsoleHumanPlayer(null, true),
+                new ConsoleHumanPlayer(),
                 new BasicAiPlayer(),
                 new BasicAiPlayer(),
                 new BasicAiPlayer()
@@ -21,7 +21,10 @@ namespace Belote
                 // new ConsoleHumanPlayer()
             });
                 // new BasicAiPlayer()
-            new Game.Game(Game.Game.GetPlayingDeck(), players).PlayGame();
+            var game = new Game.Game(Game.Game.GetPlayingDeck(), players);
+            game.State.Match!.OnBid += (i, contract) => Console.Out.WriteLine($"Player <{players[i]}> bid: {contract}");
+            game.State.Match!.OnTrickEnd += t => Console.Out.WriteLine($"Player <{players[t.winner]}> won a trick: {t.trickCards.Text()}");
+            game.PlayGame();
         }
     }
 }
