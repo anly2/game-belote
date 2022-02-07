@@ -38,11 +38,11 @@ namespace Belote.Game
             IMatchState IGameState.Match => Match;
 
 
-            public event Action<IGameState>? OnMatchEnd;
+            public event Action<(IGameState state, int[] score)>? OnMatchEnd;
             public event Action<IGameState>? OnGameEnd;
 
 
-            public void EndMatch() => OnMatchEnd?.Invoke(this);
+            public void EndMatch(int[] score) => OnMatchEnd?.Invoke((this, score));
             public void EndGame() => OnGameEnd?.Invoke(this);
         }
     }

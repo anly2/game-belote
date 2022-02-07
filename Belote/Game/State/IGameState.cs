@@ -14,7 +14,7 @@ namespace Belote.Game.State
         
         public IMatchState? Match { get; }
 
-        public event Action<IGameState>? OnMatchEnd;
+        public event Action<(IGameState state, int[] score)>? OnMatchEnd;
         public event Action<IGameState>? OnGameEnd;
     }
 }

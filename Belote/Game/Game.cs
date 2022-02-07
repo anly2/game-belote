@@ -63,9 +63,9 @@ namespace Belote.Game
             //#! With this naive condition the rule of "Cannot win with Valat" is not implemented
             while (!State.Scores.Any(s => s >= WinningScore))
             {
-                PlayMatch();
+                var score = PlayMatch();
                 //TODO: use events
-                _state.EndMatch();
+                _state.EndMatch(score);
             }
             _state.EndGame();
         }
@@ -75,7 +75,7 @@ namespace Belote.Game
             _state.Deck.Shuffle();
         }
 
-        protected virtual void PlayMatch()
+        protected virtual int[] PlayMatch()
         {
             // Init match state
             var prevDealer = _match.Dealer;
@@ -91,7 +91,7 @@ namespace Belote.Game
             if (!GatherBids())
             {
                 MergeDeckBack(_match.PlayerCards);
-                return;
+                return new[] {0, 0};
             }
             DealRemaining();
 
@@ -105,12 +105,13 @@ namespace Belote.Game
             }
 
             // Match scoring phase
-            DoScoring();
+            var score = DoScoring();
             // var scores = CountScore();
             // for (var i = 0; i < State.Scores.Length; i++)
             //     State.Scores[i] += scores[i];
 
             MergeDeckBack(_match.WonCards);
+            return score;
         }
 
         protected virtual void DealInitial()
@@ -207,7 +208,7 @@ namespace Belote.Game
             return _state.NextPlayer(_match.TrickInitiator, offset);
         }
 
-        protected virtual void DoScoring()
+        protected virtual int[] DoScoring()
         {
             var scores = new int[_state.Scores.Count];
 
@@ -238,6 +239,8 @@ namespace Belote.Game
             //Convert match points to game points
             for (var i = 0; i < scores.Length; i++)
                 _state.Scores[i] += (byte) MatchScoreToGameScore(scores[i], _match.Contract!.Value);
+
+            return scores;
         }
 
         public int CountScore(IEnumerable<Card> pile, Contract contract) //TODO: include Declarations
