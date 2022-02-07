@@ -106,9 +106,6 @@ namespace Belote.Game
 
             // Match scoring phase
             var score = DoScoring();
-            // var scores = CountScore();
-            // for (var i = 0; i < State.Scores.Length; i++)
-            //     State.Scores[i] += scores[i];
 
             MergeDeckBack(_match.WonCards);
             return score;
