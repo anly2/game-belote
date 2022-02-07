@@ -59,7 +59,10 @@ namespace Belote.Game
 
         public virtual void PlayGame()
         {
-            ShuffleBeforeGame();
+            //clear the score
+            for (var i = 0; i < _state.Scores.Count; i++)
+                _state.Scores[i] = 0;
+
             //#! With this naive condition the rule of "Cannot win with Valat" is not implemented
             while (_state.Scores.TrueForAll(s => s < WinningScore))
             {
@@ -70,7 +73,7 @@ namespace Belote.Game
             _state.EndGame();
         }
 
-        protected virtual void ShuffleBeforeGame()
+        public virtual void ShuffleBeforeGame()
         {
             _state.Deck.Shuffle();
         }
