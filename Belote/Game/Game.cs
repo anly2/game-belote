@@ -61,7 +61,7 @@ namespace Belote.Game
         {
             ShuffleBeforeGame();
             //#! With this naive condition the rule of "Cannot win with Valat" is not implemented
-            while (!State.Scores.Any(s => s >= WinningScore))
+            while (_state.Scores.TrueForAll(s => s < WinningScore))
             {
                 var score = PlayMatch();
                 //TODO: use events
