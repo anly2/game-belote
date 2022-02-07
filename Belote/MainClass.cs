@@ -48,7 +48,7 @@ namespace Belote
             };
             // game.State.Match!.OnCardPlayed += t => Console.Out.WriteLine($"<{players[t.player]}> played: {t.card.Text()}");
             game.State.Match!.OnTrickEnd += t => Console.Out.WriteLine($"<{players[t.winner]}> won a trick: {t.trickCards.Text()}");
-            game.State.OnMatchEnd += t => Console.Out.WriteLine("Match ended. Match score: " + String.Join(", ", t.score));
+            game.State.OnMatchEnd += t => Console.Out.WriteLine("Match ended. Match score: " + String.Join(", ", t.score) + " ; Game score: " + String.Join(", ", t.state.Scores));
             game.State.OnGameEnd += s => Console.Out.WriteLine("Game ended. Game score: " + String.Join(", ", s.Scores));
             game.PlayGame();
         }
