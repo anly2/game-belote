@@ -223,6 +223,13 @@ namespace Belote.Game
             var lastTrickWinner = _match.TrickInitiator!.Value;
             scores[_state.PlayerTeams[lastTrickWinner]] += 10;
 
+            //Apply doubling for NoTrumps
+            if (_match.Contract?.Plain() == Contract.NoTrumps)
+            {
+                for (var i = 0; i < scores.Length; i++)
+                    scores[i] *= 2;
+            }
+
             //Include declarations
             //TODO
 

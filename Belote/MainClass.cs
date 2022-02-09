@@ -11,9 +11,9 @@ namespace Belote
     {
         public static void Main(string[] args)
         {
-            // PlayAsHumanWithBots();
+            PlayAsHumanWithBots();
             // PlayAllBots();
-            PlayAllBots_PrintMatchScores_ForManyGames();
+            // PlayAllBots_PrintMatchScores_ForManyGames();
         }
 
         public static void PlayAsHumanWithBots()
