@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -106,6 +107,59 @@ namespace Belote.Player.Human.Console
 
             sb.Append(" )");
             System.Console.Out.WriteLine(sb.ToString());
+        }
+
+
+        public static string RenderBid(int player, Contract? contract)
+        {
+            var sb = new StringBuilder();
+
+            for (var i = 0; i < player; i++)
+                sb.Append("     ");
+
+            if (contract == null)
+                sb.Append("pass");
+            else
+                sb.Append(' ').Append(contract.Value.Text());
+
+            return sb.ToString();
+        }
+
+        public static string RenderBiddingEnd(IMatchState match)
+        {
+            if (match.Contract == null) return "everyone passed";
+            return RenderBid(match.CommittedPlayer ?? 0, match.Contract);
+        }
+
+        public static string RenderTrickEnd(IList players, IEnumerable<Card> trickCards, int initiator, int winner)
+        {
+            // System.Console.Out.WriteLine($"<{players[winner]}> won a trick: {trickCards.Text()}");
+            var sb = new StringBuilder();
+
+            for (var i = 0; i < initiator; i++)
+                sb.Append("     ");
+
+            {
+                var i = initiator;
+                foreach (var trickCard in trickCards)
+                {
+                    var cardText = trickCard.Text();
+                    sb.Append(' ').Append(cardText).Append(' ');
+
+                    //pad to 3 chars
+                    var d = 3 - cardText.Length;
+                    for (var j = 0; j < d; j++) sb.Append(' ');
+
+                    if (winner == i)
+                    {
+                        sb.Replace(' ', '(', sb.Length - 5, 1);
+                        sb.Replace(' ', ')', sb.Length - 1 - d, 1);
+                    }
+                    i = (i + 1) % players.Count;
+                }
+            }
+
+            return sb.ToString();
         }
     }
 }

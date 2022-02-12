@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using Belote.Domain;
 using Belote.Player;
 using Belote.Player.Ai.Basic;
 using Belote.Player.Human.Console;
+using static Belote.Player.Human.Console.ConsoleHumanPlayer;
 
 namespace Belote
 {
@@ -11,8 +13,8 @@ namespace Belote
     {
         public static void Main(string[] args)
         {
-            PlayAsHumanWithBots();
-            // PlayAllBots();
+            // PlayAsHumanWithBots();
+            PlayAllBots();
             // PlayAllBots_PrintMatchScores_ForManyGames();
         }
 
@@ -46,13 +48,21 @@ namespace Belote
             });
             var game = new Game.Game(Game.Game.GetPlayingDeck(), players);
 
-            game.State.Match!.OnBid += t =>
-            {
-                // Console.Out.WriteLine($"<{players[t.player]}> hand: {game.State.Match.PlayerCards[t.player].Text()}");
-                Console.Out.WriteLine($"<{players[t.player]}> " + (t.bid != null ? $"bid: {t.bid}" : "passed"));
-            };
+            Console.Out.WriteLine("Playing:");
+            for(var i = 0; i < 7; i++)
+                Console.Out.WriteLine(String.Join("", Enumerable.Repeat(" |   ", i)) + " " + players[i % players.Count]);
+            Console.Out.WriteLine("=|====|====|====|====|====|====|============================");
+
+            // game.State.Match!.OnBid += t =>
+            // {
+            //     // Console.Out.WriteLine($"<{players[t.player]}> hand: {game.State.Match.PlayerCards[t.player].Text()}");
+            //     Console.Out.WriteLine($"<{players[t.player]}> " + (t.bid != null ? $"bid: {t.bid}" : "passed"));
+            // };
             // game.State.Match!.OnCardPlayed += t => Console.Out.WriteLine($"<{players[t.player]}> played: {t.card.Text()}");
-            game.State.Match!.OnTrickEnd += t => Console.Out.WriteLine($"<{players[t.winner]}> won a trick: {t.trickCards.Text()}");
+
+            game.State.Match!.OnBiddingEnd += m => Console.Out.WriteLine(RenderBiddingEnd(m));
+            game.State.Match!.OnTrickEnd += t => Console.Out.WriteLine(RenderTrickEnd(players, t.trickCards, t.initiator, t.winner));
+
             game.State.OnMatchEnd += t => Console.Out.WriteLine("Match ended. Match score: " + String.Join(", ", t.score) + " ; Game score: " + String.Join(", ", t.state.Scores));
             game.State.OnGameEnd += s => Console.Out.WriteLine("Game ended. Game score: " + String.Join(", ", s.Scores));
 

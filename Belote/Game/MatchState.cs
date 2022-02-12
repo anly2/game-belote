@@ -68,6 +68,7 @@ namespace Belote.Game
 
 
             public event Action<(int player, Contract? bid)>? OnBid;
+            public event Action<IMatchState>? OnBiddingEnd;
             public event Action<(int player, Card card)>? OnCardPlayed;
             public event Action<(IEnumerable<Card> trickCards, int initiator, int winner)>? OnTrickEnd;
 
@@ -80,6 +81,11 @@ namespace Belote.Game
                     Contract = bid;
                 }
                 OnBid?.Invoke((playerIndex, bid));
+            }
+
+            public void EndBidding()
+            {
+                OnBiddingEnd?.Invoke(this);
             }
 
             public void PlayCard(int player, Card card)

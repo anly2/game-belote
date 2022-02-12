@@ -172,6 +172,7 @@ namespace Belote.Game
                 _match.Bid(playerIndex, bid);
             }
 
+            _match.EndBidding();
             return currentBid != null;
         }
 

@@ -18,6 +18,7 @@ namespace Belote.Game.State
 
 
         event Action<(int player, Contract? bid)> OnBid;
+        event Action<IMatchState>? OnBiddingEnd;
         event Action<(IEnumerable<Card> trickCards, int initiator, int winner)>? OnTrickEnd;
 
         //event OnPlayedCard
