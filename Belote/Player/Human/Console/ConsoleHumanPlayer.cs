@@ -161,5 +161,27 @@ namespace Belote.Player.Human.Console
 
             return sb.ToString();
         }
+
+        public static string RenderScore(IReadOnlyList<byte> gameScore, int[] matchScore, Contract? contract)
+        {
+            // return "Match score: " + String.Join(", ", matchScore) + " ; Game score: " + String.Join(", ", gameScore);
+            var sb = new StringBuilder();
+            sb.Append("Match score: ").Append(String.Join(", ", matchScore));
+            sb.Append(" ; ");
+
+            IEnumerable<string> gameScoreEntries;
+            if (contract != null)
+            {
+                var points = Game.Game.MatchScoreToGameScore(matchScore, contract.Value);
+                gameScoreEntries = gameScore.Select((s, i) => $"{s} (+{points[i]})");
+            }
+            else
+            {
+                gameScoreEntries = gameScore.Select(b => b.ToString());
+            }
+
+            sb.Append("Game score: ").Append(String.Join(", ", gameScoreEntries));
+            return sb.ToString();
+        }
     }
 }

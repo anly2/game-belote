@@ -63,7 +63,7 @@ namespace Belote
             game.State.Match!.OnBiddingEnd += m => Console.Out.WriteLine(RenderBiddingEnd(m));
             game.State.Match!.OnTrickEnd += t => Console.Out.WriteLine(RenderTrickEnd(players, t.trickCards, t.initiator, t.winner));
 
-            game.State.OnMatchEnd += t => Console.Out.WriteLine("Match ended. Match score: " + String.Join(", ", t.score) + " ; Game score: " + String.Join(", ", t.state.Scores));
+            game.State.OnMatchEnd += t => Console.Out.WriteLine("Match ended. " + RenderScore(t.state.Scores, t.score, t.state.Match?.Contract));
             game.State.OnGameEnd += s => Console.Out.WriteLine("Game ended. Game score: " + String.Join(", ", s.Scores));
 
             game.ShuffleBeforeGame();
