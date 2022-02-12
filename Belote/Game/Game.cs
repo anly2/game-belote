@@ -245,8 +245,9 @@ namespace Belote.Game
             }
 
             //Convert match points to game points
+            var points = MatchScoreToGameScore(scores, _match.Contract!.Value);
             for (var i = 0; i < scores.Length; i++)
-                _state.Scores[i] += (byte) MatchScoreToGameScore(scores[i], _match.Contract!.Value);
+                _state.Scores[i] += (byte) points[i];
 
             return scores;
         }
@@ -256,10 +257,32 @@ namespace Belote.Game
             return pile.Sum(c => c.Value(contract));
         }
 
-        public int MatchScoreToGameScore(int matchScore, Contract contract)
+        public static int[] MatchScoreToGameScore(int[] matchScores, Contract contract)
         {
-            //TODO: implement special rounding
-            return (int) Math.Round((double) matchScore / 10);
+            var points = new int[matchScores.Length];
+            matchScores.CopyTo(points, 0);
+
+            var limit = contract switch
+            {
+                Contract.NoTrumps => 5,
+                Contract.AllTrumps => 4,
+                _ => 6
+            };
+
+            //ASSUME 2 teams for now
+            if (points[0] % 10 == limit && points[1] % 10 == limit)
+                points[points[0] < points[1] ? 1 : 0] --;
+
+            for (var i = 0; i < points.Length; i++)
+            {
+                var p = points[i];
+                var o = p % 10;
+                if (o >= limit) p += 10;
+                p -= o;
+                points[i] = p / 10;
+            }
+
+            return points;
         }
 
 
